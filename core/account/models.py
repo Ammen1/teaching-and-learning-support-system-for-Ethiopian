@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group, Permission
-from phonenumber_field.modelfields import PhoneNumberField
+
 
 # Create your models here.
 def upload_to(instance, filename):
@@ -43,9 +43,9 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     )
 
     email = models.EmailField(max_length=50, unique=True)
-    phone_number = models.CharField(null=True, blank=True)
+    phone_number = models.CharField(max_length=100, null=True, blank=True)
     full_name = models.CharField(max_length=200)
-    address = models.CharField(max_length=length, ${blank=True, null=True})
+    address = models.CharField(max_length=200, blank=True)
     profile_pic = models.ImageField(upload_to=upload_to, null=True, blank=True)
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now=True)
@@ -89,7 +89,7 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
 class TeacherProfile(models.Model):
     user = models.OneToOneField('UserAccount', on_delete=models.CASCADE, related_name='teacher_profile')
     years_of_experience = models.PositiveIntegerField()
-    job_role=models.CharField()
+    job_role=models.CharField(max_length=100)
     about = models.CharField(max_length=500)
 
 
@@ -100,11 +100,11 @@ class StudentProfile(models.Model):
     user=models.OneToOneField('UserAccount',on_delete=models.CASCADE,related_name='student_profile')  
     highest_education=models.CharField(max_length=100)
     specialization=models.CharField(max_length=200,null=True)
-    mother_name=models.CharField(null=True)
-    father_name=models.CharField(null=True)
-    city=models.CharField()
-    state=models.CharField()
-    pin=models.CharField()
+    mother_name=models.CharField(max_length=100, null=True)
+    father_name=models.CharField(max_length=100, null=True)
+    city=models.CharField(max_length=100)
+    state=models.CharField(max_length=100)
+    pin=models.CharField(max_length=100)
 
     def __str__(self):
         return f"{self.user.full_name}'s Student Profile",self.id
