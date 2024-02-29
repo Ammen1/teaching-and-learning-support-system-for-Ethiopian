@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -156,15 +157,27 @@ from datetime import timedelta
 
 
 
+# settings.py
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587  # Replace with the appropriate port (e.g., 587 for TLS, 465 for SSL)
-EMAIL_USE_TLS = True  # Use TLS (or False if using SSL)
-EMAIL_HOST_USER = 'amenguda@gmail.com'
-EMAIL_HOST_PASSWORD = 'Amen#!97'
+EMAIL_HOST = 'mail.gooderash.com'
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = 'e-learning@gooderash.com'
+EMAIL_HOST_PASSWORD = 'Amen#19729'
+
+
+
+EMAIL_FROM_ADDRESS = 'e-learning@gooderash.com'
 
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+
+STUDENT_ID_PREFIX = config("STUDENT_ID_PREFIX", "Ru/")
+LECTURER_ID_PREFIX = config("LECTURER_ID_PREFIX", "lec")
