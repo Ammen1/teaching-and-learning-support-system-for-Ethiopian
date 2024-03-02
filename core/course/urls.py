@@ -7,5 +7,6 @@ urlpatterns = [
     path('program/<int:pk>/', ProgramDetailView.as_view(), name='program_edit'),
     path('program/<int:pk>/edit/', ProgramEditView.as_view(), name='program_edit_api'),
     path('program/delete/<int:pk>/', ProgramDeleteView.as_view(), name='program_delete_api'),
+    path('course/single/<slug:slug>/', CourseSingleAPIView.as_view(), name='course_single_api')
 
 ]
