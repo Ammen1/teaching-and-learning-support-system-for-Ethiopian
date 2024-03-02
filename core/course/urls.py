@@ -9,5 +9,7 @@ urlpatterns = [
     path('program/delete/<int:pk>/', ProgramDeleteView.as_view(), name='program_delete_api'),
     path('course/single/<slug:slug>/', CourseSingleAPIView.as_view(), name='course_single_api'),
     path('course/add/', CourseAddAPIView.as_view(), name='course_add_api'),
+    path('course/edit/<slug:slug>/', CourseEditAPIView.as_view(), name='course_edit_api'),
+    path('course/delete/<slug:slug>/', CourseDeleteAPIView.as_view(), name='course_delete_api'),
 
 ]

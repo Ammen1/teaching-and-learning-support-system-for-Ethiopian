@@ -10,6 +10,7 @@ from rest_framework.generics import RetrieveUpdateAPIView, DestroyAPIView, Creat
 from .serializers import CourseSerializer, UploadFormFileSerializer, UploadFormVideoSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
+from django.contrib import messages
 
 
 class ProgramAPIView(CreateAPIView):
@@ -92,3 +93,15 @@ class CourseAddAPIView(generics.CreateAPIView):
     def perform_create(self, serializer):
         # Customize the creation process if needed
         serializer.save()
+        
+
+class CourseEditAPIView(generics.RetrieveUpdateAPIView):
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'slug'
+
+
+
+
+
