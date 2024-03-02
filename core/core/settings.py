@@ -10,15 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
-
+from pathlib import Path
+# from decouple import config
 import os
-
-from decouple import config, Csv
-
-# Example usage
-STUDENT_ID_PREFIX = config("STUDENT_ID_PREFIX", default="Ru/")
-LECTURER_ID_PREFIX = config("LECTURER_ID_PREFIX", default="lec")
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -227,5 +221,5 @@ LOGGING = {
 
 
 
-STUDENT_ID_PREFIX = config("STUDENT_ID_PREFIX", "Ru/")
-LECTURER_ID_PREFIX = config("LECTURER_ID_PREFIX", "lec")
+STUDENT_ID_PREFIX =  "Ru/"
+LECTURER_ID_PREFIX =  "lec"
