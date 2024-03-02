@@ -1,14 +1,15 @@
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Program
+from .models import Program, CourseAllocation, UploadVideo, Upload, Course
 from .serializers import ProgramSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import permissions
 from .serializers import ProgramSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.generics import RetrieveUpdateAPIView, DestroyAPIView, CreateAPIView, RetrieveAPIView
-
-
+from .serializers import CourseSerializer, UploadFormFileSerializer, UploadFormVideoSerializer
+from django.shortcuts import get_object_or_404
+from rest_framework import generics
 
 
 class ProgramAPIView(CreateAPIView):
@@ -27,7 +28,6 @@ class ProgramAPIView(CreateAPIView):
 
 
 
-
 class ProgramDetailView(RetrieveAPIView):
     queryset = Program.objects.all()
     serializer_class = ProgramSerializer
@@ -43,10 +43,6 @@ class ProgramEditView(RetrieveUpdateAPIView):
     
     
 
-
-from rest_framework.response import Response
-from rest_framework import status
-
 class ProgramDeleteView(DestroyAPIView):
     queryset = Program.objects.all()
     serializer_class = ProgramSerializer
@@ -57,4 +53,32 @@ class ProgramDeleteView(DestroyAPIView):
         title = program.title
         program.delete()
         return Response({"detail": f"Program {title} has been deleted."}, status=status.HTTP_204_NO_CONTENT)
+   
+
+
+
+class CourseSingleAPIView(generics.RetrieveAPIView):
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'slug'
+
+    def retrieve(self, request, *args, **kwargs):
+        course = self.get_object()
+        files = Upload.objects.filter(course=course)
+        videos = UploadVideo.objects.filter(course=course)
+        lecturers = CourseAllocation.objects.filter(courses=course)
+
+        course_serializer = CourseSerializer(course)
+        files_serializer = UploadFormFileSerializer(files, many=True)
+        videos_serializer = UploadFormVideoSerializer(videos, many=True)
+
+        return Response({
+            "course": course_serializer.data,
+            "files": files_serializer.data,
+            "videos": videos_serializer.data,
+            "lecturers": lecturers.values(),  # Convert QuerySet to a list
+        })
+
+
    
