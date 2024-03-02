@@ -8,4 +8,5 @@ urlpatterns = [
     path('session/list/', session_list_view, name='session_list'),
     path('session/add/', session_add_view, name='session_add'),
     
+    
     ]

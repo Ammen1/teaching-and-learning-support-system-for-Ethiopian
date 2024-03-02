@@ -88,3 +88,5 @@ def session_add_view(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     return Response({"error": "Invalid data provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+
