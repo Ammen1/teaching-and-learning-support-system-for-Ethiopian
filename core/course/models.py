@@ -8,7 +8,7 @@ from django.dispatch import receiver
 
 # project import
 from .utils import *
-from core.models import ActivityLog
+from cores.models import ActivityLog
 
 YEARS = (
     (1, "1"),
@@ -150,7 +150,7 @@ class CourseAllocation(models.Model):
     )
     courses = models.ManyToManyField(Course, related_name="allocated_course")
     session = models.ForeignKey(
-        "core.Session", on_delete=models.CASCADE, blank=True, null=True
+        "cores.Session", on_delete=models.CASCADE, blank=True, null=True
     )
 
     def __str__(self):
@@ -285,7 +285,7 @@ def log_delete(sender, instance, **kwargs):
 class CourseOffer(models.Model):
     """NOTE: Only department head can offer semester courses"""
 
-    dep_head = models.ForeignKey("accounts.DepartmentHead", on_delete=models.CASCADE)
+    dep_head = models.ForeignKey("account.DepartmentHead", on_delete=models.CASCADE)
 
     def __str__(self):
         return "{}".format(self.dep_head)
