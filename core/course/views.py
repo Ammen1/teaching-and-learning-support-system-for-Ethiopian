@@ -103,5 +103,17 @@ class CourseEditAPIView(generics.RetrieveUpdateAPIView):
 
 
 
+class CourseDeleteAPIView(generics.DestroyAPIView):
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'slug'
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        program_id = instance.program.id
+        title = instance.title  
+        self.perform_destroy(instance)
+        return Response({"detail": f"Course {title} has been deleted."}, status=status.HTTP_204_NO_CONTENT)
 
 
