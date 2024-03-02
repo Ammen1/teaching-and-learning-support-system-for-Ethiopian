@@ -55,7 +55,9 @@ class ProgramDeleteView(DestroyAPIView):
         return Response({"detail": f"Program {title} has been deleted."}, status=status.HTTP_204_NO_CONTENT)
    
 
-
+# #####################
+# Course views
+# #####################
 
 class CourseSingleAPIView(generics.RetrieveAPIView):
     queryset = Course.objects.all()
@@ -82,3 +84,11 @@ class CourseSingleAPIView(generics.RetrieveAPIView):
 
 
    
+class CourseAddAPIView(generics.CreateAPIView):
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        # Customize the creation process if needed
+        serializer.save()
