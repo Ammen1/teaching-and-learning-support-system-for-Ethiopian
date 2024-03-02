@@ -7,7 +7,7 @@ from rest_framework import permissions
 from .serializers import ProgramSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.generics import RetrieveUpdateAPIView, DestroyAPIView, CreateAPIView, RetrieveAPIView
-from .serializers import CourseSerializer, UploadFormFileSerializer, UploadFormVideoSerializer
+from .serializers import *
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from django.contrib import messages
@@ -117,3 +117,24 @@ class CourseDeleteAPIView(generics.DestroyAPIView):
         return Response({"detail": f"Course {title} has been deleted."}, status=status.HTTP_204_NO_CONTENT)
 
 
+
+
+class CourseAllocationAPIView(generics.CreateAPIView):
+    serializer_class = CourseAllocationSerializer
+    permission_classes = [IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        lecturer = serializer.validated_data["lecturer"]
+        selected_courses = serializer.validated_data["courses"]
+
+        # Use get_or_create to either update the existing allocation or create a new one
+        allocation, created = CourseAllocation.objects.get_or_create(lecturer=lecturer)
+
+        # Clear the existing courses and add the selected ones
+        allocation.courses.clear()
+        allocation.courses.add(*selected_courses)
+
+        return Response({"detail": "Courses assigned successfully."}, status=status.HTTP_200_OK)
