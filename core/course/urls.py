@@ -11,5 +11,6 @@ urlpatterns = [
     path('course/add/', CourseAddAPIView.as_view(), name='course_add_api'),
     path('course/edit/<slug:slug>/', CourseEditAPIView.as_view(), name='course_edit_api'),
     path('course/delete/<slug:slug>/', CourseDeleteAPIView.as_view(), name='course_delete_api'),
+     path('course/allocation/', CourseAllocationAPIView.as_view(), name='course_allocation_api'),
 
 ]
