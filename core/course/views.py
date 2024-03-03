@@ -10,7 +10,9 @@ from rest_framework.generics import RetrieveUpdateAPIView, DestroyAPIView, Creat
 from .serializers import *
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
-from django.contrib import messages
+from django_filters.rest_framework import DjangoFilterBackend
+from .filters import ProgramFilter, CourseAllocationFilter
+from rest_framework.views import APIView
 
 
 class ProgramAPIView(CreateAPIView):
@@ -118,23 +120,80 @@ class CourseDeleteAPIView(generics.DestroyAPIView):
 
 
 
+    
+from django.db.models import Count, OuterRef, Subquery, F, Func, Value
+from rest_framework import generics
+from .models import CourseAllocation
+from .serializers import CourseAllocationSerializer
+from .filters import CourseAllocationFilter
+from django.db.models import CharField
 
-class CourseAllocationAPIView(generics.CreateAPIView):
+
+class CourseAllocationAPIView(generics.ListAPIView):
     serializer_class = CourseAllocationSerializer
+    filterset_class = CourseAllocationFilter
+    lookup_field = 'id'  # Use 'id' as a string
+
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.is_lecturer:
+            queryset = CourseAllocation.objects.filter(lecturer=user)
+        else:
+            queryset = CourseAllocation.objects.all()
+
+        # Annotate the queryset with additional information about courses
+        queryset = queryset.annotate(
+            course_count=Count('courses'),
+            course_ids=Subquery(
+                Course.objects.filter(
+                    slug=OuterRef('pk')
+                ).values('id').annotate(
+                    course_ids=Func(
+                        F('id'),
+                        Value(' - '),
+                        function='GROUP_CONCAT',
+                        distinct=True,
+                        output_field=CharField()
+                    ),
+                ).values('course_ids')[:1],
+  # Move output_field here
+            )
+        )
+
+        return queryset
+
+
+
+class EditAllocatedCourseAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+    def get(self, request, pk):
+        allocated = get_object_or_404(CourseAllocation, pk=pk)
+        serializer =  CourseAllocationSerializer(allocated)
+        return Response(serializer.data)
 
-        lecturer = serializer.validated_data["lecturer"]
-        selected_courses = serializer.validated_data["courses"]
+    def put(self, request, pk):
+        allocated = get_object_or_404(CourseAllocation, pk=pk)
+        serializer =  CourseAllocationSerializer(allocated, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        # Use get_or_create to either update the existing allocation or create a new one
-        allocation, created = CourseAllocation.objects.get_or_create(lecturer=lecturer)
+class DeallocateCourseAPIView(APIView):
+    permission_classes = [IsAuthenticated]
 
-        # Clear the existing courses and add the selected ones
-        allocation.courses.clear()
-        allocation.courses.add(*selected_courses)
-
-        return Response({"detail": "Courses assigned successfully."}, status=status.HTTP_200_OK)
+    def delete(self, request, pk):
+        course = get_object_or_404(CourseAllocation, pk=pk)
+        course.delete()
+        return Response({"message": "Successfully deallocated!"}, status=status.HTTP_204_NO_CONTENT)
+    
+    
+@permission_classes([IsAuthenticated])
+class CourseAllocationFilterAPIView(APIView):
+    def get(self, request, *args, **kwargs):
+        queryset = CourseAllocation.objects.all()  # Replace with your actual queryset
+        filtered_queryset = CourseAllocationFilter(request.GET, queryset=queryset).qs
+        serializer = CourseAllocationSerializer(filtered_queryset, many=True)
+        return Response(serializer.data)    
