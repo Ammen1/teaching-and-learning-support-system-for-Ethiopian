@@ -11,6 +11,9 @@ urlpatterns = [
     path('course/add/', CourseAddAPIView.as_view(), name='course_add_api'),
     path('course/edit/<slug:slug>/', CourseEditAPIView.as_view(), name='course_edit_api'),
     path('course/delete/<slug:slug>/', CourseDeleteAPIView.as_view(), name='course_delete_api'),
-     path('course/allocation/', CourseAllocationAPIView.as_view(), name='course_allocation_api'),
+    path('course/allocations/', CourseAllocationAPIView.as_view(), name='course_allocation_api'),
+    path('course/allocated/edit/<int:pk>/', EditAllocatedCourseAPIView.as_view(), name='edit_allocated_course_api'),
+    path('course/allocated/deallocate/<int:pk>/', DeallocateCourseAPIView.as_view(), name='deallocate_course_api'),
+     path('course/course/allocations/', CourseAllocationFilterAPIView.as_view(), name='course_allocation_api'),
 
 ]
