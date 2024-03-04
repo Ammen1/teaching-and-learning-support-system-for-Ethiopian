@@ -9,4 +9,9 @@ urlpatterns = [
     path('grade_result/', GradeResultAPIView.as_view(), name='grade_result_api'),
     path('assessment_result/', AssessmentResultAPIView.as_view(), name='assessment_result_api'),
     path('result_sheet_pdf_view/<int:id>/', ResultSheetPDFAPIView.as_view(), name='result_sheet_pdf_view'),
+    path(
+        'registration_form/',
+        CourseRegistrationPDFAPIView.as_view(),
+        name='course_registration_pdf'
+    ),
 ]
