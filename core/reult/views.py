@@ -12,6 +12,10 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from .serializers import TakenCourseSerializer, ResultSerializer
 from django.contrib import messages
+from rest_framework.decorators import permission_classes
+
+
+
 
 class AddScoreAPIView(APIView):
     authentication_classes = [SessionAuthentication]
@@ -168,3 +172,65 @@ class AddScoreForAPIView(APIView):
         messages.success(request, "Successfully Recorded! ")
         return Response({"message": "Successfully Recorded!"}, status=status.HTTP_201_CREATED)
 
+
+
+class GradeResultAPIView(APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, *args, **kwargs):
+        student = Student.objects.get(student__pk=request.user.id)
+        courses = TakenCourse.objects.filter(student__student__pk=request.user.id).filter(
+            course__level=student.level
+        )
+        
+        results = Result.objects.filter(student__student__pk=request.user.id)
+
+        result_set = set()
+
+        for result in results:
+            result_set.add(result.session)
+
+        sorted_result = sorted(result_set)
+
+        total_first_semester_credit = 0
+        total_sec_semester_credit = 0
+        for i in courses:
+            if i.course.semester == "First":
+                total_first_semester_credit += int(i.course.credit)
+            if i.course.semester == "Second":
+                total_sec_semester_credit += int(i.course.credit)
+
+        previousCGPA = 0
+        # previousLEVEL = 0
+        # calculate_cgpa
+        for i in results:
+            previousLEVEL = i.level
+            try:
+                a = Result.objects.get(
+                    student__student__pk=request.user.id,
+                    level=previousLEVEL,
+                    semester="Second",
+                )
+                previousCGPA = a.cgpa
+                break
+            except:
+                previousCGPA = 0
+
+        # Serialize the data
+        courses_serializer = TakenCourseSerializer(courses, many=True)
+        results_serializer = ResultSerializer(results, many=True)
+
+        context = {
+            "courses": courses_serializer.data,
+            "results": results_serializer.data,
+            "sorted_result": sorted_result,
+            "student": student,
+            "total_first_semester_credit": total_first_semester_credit,
+            "total_sec_semester_credit": total_sec_semester_credit,
+            "total_first_and_second_semester_credit": total_first_semester_credit
+            + total_sec_semester_credit,
+            "previousCGPA": previousCGPA,
+        }
+
+        return Response(context)
