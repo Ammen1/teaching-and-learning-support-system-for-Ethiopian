@@ -441,3 +441,313 @@ class ResultSheetPDFAPIView(APIView):
         return response
 
 
+class CourseRegistrationPDFAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+ 
+    def get(self, request, *args, **kwargs):
+        current_semester = Semester.objects.get(is_current_semester=True)
+        current_session = Session.objects.get(is_current_session=True)
+        courses = TakenCourse.objects.filter(student__student__id=request.user.id)
+        fname = request.user.username + ".pdf"
+        fname = fname.replace("/", "-")
+        # flocation = '/tmp/' + fname
+        # print(MEDIA_ROOT + "\\" + fname)
+        flocation = settings.MEDIA_ROOT + "/registration_form/" + fname
+        doc = SimpleDocTemplate(
+            flocation, rightMargin=15, leftMargin=15, topMargin=0, bottomMargin=0
+        )
+        styles = getSampleStyleSheet()
+
+        Story = [Spacer(1, 0.5)]
+        Story.append(Spacer(1, 0.4 * inch))
+        style = styles["Normal"]
+
+        style = getSampleStyleSheet()
+        normal = style["Normal"]
+        normal.alignment = TA_CENTER
+        normal.fontName = "Helvetica"
+        normal.fontSize = 12
+        normal.leading = 18
+        title = "<b>JIT JIMMA UNIVERSITY OF TECHNOLOGY, JIMMA</b>"  # TODO: Make this dynamic
+        title = Paragraph(title.upper(), normal)
+        Story.append(title)
+        style = getSampleStyleSheet()
+
+        school = style["Normal"]
+        school.alignment = TA_CENTER
+        school.fontName = "Helvetica"
+        school.fontSize = 10
+        school.leading = 18
+        school_title = (
+            "<b>SCHOOL OF INFORMATION AND COMPUTING TECHINOLOGY </b>"  # TODO: Make this dynamic
+        )
+        school_title = Paragraph(school_title.upper(), school)
+        Story.append(school_title)
+
+        style = getSampleStyleSheet()
+        Story.append(Spacer(1, 0.1 * inch))
+        department = style["Normal"]
+        department.alignment = TA_CENTER
+        department.fontName = "Helvetica"
+        department.fontSize = 9
+        department.leading = 18
+        department_title = (
+            "<b>DEPARTMENT OF INFORMATION AND COMPUTING TECHINOLOGY</b>"  # TODO: Make this dynamic
+        )
+        department_title = Paragraph(department_title, department)
+        Story.append(department_title)
+        Story.append(Spacer(1, 0.3 * inch))
+
+        title = "<b><u>STUDENT COURSE REGISTRATION FORM</u></b>"
+        title = Paragraph(title.upper(), normal)
+        Story.append(title)
+        student = Student.objects.get(student__pk=request.user.id)
+
+        style_right = ParagraphStyle(name="right", parent=styles["Normal"])
+        tbl_data = [
+            [
+                Paragraph(
+                    "<b>Registration Number : " + request.user.username.upper() + "</b>",
+                    styles["Normal"],
+                )
+            ],
+            [
+                Paragraph(
+                    "<b>Name : " + request.user.get_full_name.upper() + "</b>",
+                    styles["Normal"],
+                )
+            ],
+            [
+                Paragraph(
+                    "<b>Session : " + current_session.session.upper() + "</b>",
+                    styles["Normal"],
+                ),
+                Paragraph("<b>Level: " + student.level + "</b>", styles["Normal"]),
+            ],
+        ]
+        tbl = Table(tbl_data)
+        Story.append(tbl)
+        Story.append(Spacer(1, 0.6 * inch))
+
+        style = getSampleStyleSheet()
+        semester = style["Normal"]
+        semester.alignment = TA_LEFT
+        semester.fontName = "Helvetica"
+        semester.fontSize = 9
+        semester.leading = 18
+        semester_title = "<b>FIRST SEMESTER</b>"
+        semester_title = Paragraph(semester_title, semester)
+        Story.append(semester_title)
+
+        elements = []
+
+        # FIRST SEMESTER
+        count = 0
+        header = [
+            (
+                "S/No",
+                "Course Code",
+                "Course Title",
+                "Unit",
+                Paragraph("Name, Siganture of course lecturer & Date", style["Normal"]),
+            )
+        ]
+        table_header = Table(header, 1 * [1.4 * inch], 1 * [0.5 * inch])
+        table_header.setStyle(
+            TableStyle(
+                [
+                    ("ALIGN", (-2, -2), (-2, -2), "CENTER"),
+                    ("VALIGN", (-2, -2), (-2, -2), "MIDDLE"),
+                    ("ALIGN", (1, 0), (1, 0), "CENTER"),
+                    ("VALIGN", (1, 0), (1, 0), "MIDDLE"),
+                    ("ALIGN", (0, 0), (0, 0), "CENTER"),
+                    ("VALIGN", (0, 0), (0, 0), "MIDDLE"),
+                    ("ALIGN", (-4, 0), (-4, 0), "LEFT"),
+                    ("VALIGN", (-4, 0), (-4, 0), "MIDDLE"),
+                    ("ALIGN", (-3, 0), (-3, 0), "LEFT"),
+                    ("VALIGN", (-3, 0), (-3, 0), "MIDDLE"),
+                    ("TEXTCOLOR", (0, -1), (-1, -1), colors.black),
+                    ("INNERGRID", (0, 0), (-1, -1), 0.25, colors.black),
+                    ("BOX", (0, 0), (-1, -1), 0.25, colors.black),
+                ]
+            )
+        )
+        Story.append(table_header)
+
+        first_semester_unit = 0
+        for course in courses:
+            if course.course.semester == FIRST:
+                first_semester_unit += int(course.course.credit)
+                data = [
+                    (
+                        count + 1,
+                        course.course.code.upper(),
+                        Paragraph(course.course.title, style["Normal"]),
+                        course.course.credit,
+                        "",
+                    )
+                ]
+                color = colors.black
+                count += 1
+                table_body = Table(data, 1 * [1.4 * inch], 1 * [0.3 * inch])
+                table_body.setStyle(
+                    TableStyle(
+                        [
+                            ("ALIGN", (-2, -2), (-2, -2), "CENTER"),
+                            ("ALIGN", (1, 0), (1, 0), "CENTER"),
+                            ("ALIGN", (0, 0), (0, 0), "CENTER"),
+                            ("ALIGN", (-4, 0), (-4, 0), "LEFT"),
+                            ("TEXTCOLOR", (0, -1), (-1, -1), colors.black),
+                            ("INNERGRID", (0, 0), (-1, -1), 0.25, colors.black),
+                            ("BOX", (0, 0), (-1, -1), 0.25, colors.black),
+                        ]
+                    )
+                )
+                Story.append(table_body)
+
+        style = getSampleStyleSheet()
+        semester = style["Normal"]
+        semester.alignment = TA_LEFT
+        semester.fontName = "Helvetica"
+        semester.fontSize = 8
+        semester.leading = 18
+        semester_title = (
+            "<b>Total Second First Credit : " + str(first_semester_unit) + "</b>"
+        )
+        semester_title = Paragraph(semester_title, semester)
+        Story.append(semester_title)
+
+        # FIRST SEMESTER ENDS HERE
+        Story.append(Spacer(1, 0.6 * inch))
+
+        style = getSampleStyleSheet()
+        semester = style["Normal"]
+        semester.alignment = TA_LEFT
+        semester.fontName = "Helvetica"
+        semester.fontSize = 9
+        semester.leading = 18
+        semester_title = "<b>SECOND SEMESTER</b>"
+        semester_title = Paragraph(semester_title, semester)
+        Story.append(semester_title)
+        # SECOND SEMESTER
+        count = 0
+        header = [
+            (
+                "S/No",
+                "Course Code",
+                "Course Title",
+                "Unit",
+                Paragraph(
+                    "<b>Name, Signature of course lecturer & Date</b>", style["Normal"]
+                ),
+            )
+        ]
+        table_header = Table(header, 1 * [1.4 * inch], 1 * [0.5 * inch])
+        table_header.setStyle(
+            TableStyle(
+                [
+                    ("ALIGN", (-2, -2), (-2, -2), "CENTER"),
+                    ("VALIGN", (-2, -2), (-2, -2), "MIDDLE"),
+                    ("ALIGN", (1, 0), (1, 0), "CENTER"),
+                    ("VALIGN", (1, 0), (1, 0), "MIDDLE"),
+                    ("ALIGN", (0, 0), (0, 0), "CENTER"),
+                    ("VALIGN", (0, 0), (0, 0), "MIDDLE"),
+                    ("ALIGN", (-4, 0), (-4, 0), "LEFT"),
+                    ("VALIGN", (-4, 0), (-4, 0), "MIDDLE"),
+                    ("ALIGN", (-3, 0), (-3, 0), "LEFT"),
+                    ("VALIGN", (-3, 0), (-3, 0), "MIDDLE"),
+                    ("TEXTCOLOR", (0, -1), (-1, -1), colors.black),
+                    ("INNERGRID", (0, 0), (-1, -1), 0.25, colors.black),
+                    ("BOX", (0, 0), (-1, -1), 0.25, colors.black),
+                ]
+            )
+        )
+        Story.append(table_header)
+
+        second_semester_unit = 0
+        for course in courses:
+            if course.course.semester == SECOND:
+                second_semester_unit += int(course.course.credit)
+                data = [
+                    (
+                        count + 1,
+                        course.course.code.upper(),
+                        Paragraph(course.course.title, style["Normal"]),
+                        course.course.credit,
+                        "",
+                    )
+                ]
+                color = colors.black
+                count += 1
+                table_body = Table(data, 1 * [1.4 * inch], 1 * [0.3 * inch])
+                table_body.setStyle(
+                    TableStyle(
+                        [
+                            ("ALIGN", (-2, -2), (-2, -2), "CENTER"),
+                            ("ALIGN", (1, 0), (1, 0), "CENTER"),
+                            ("ALIGN", (0, 0), (0, 0), "CENTER"),
+                            ("ALIGN", (-4, 0), (-4, 0), "LEFT"),
+                            ("TEXTCOLOR", (0, -1), (-1, -1), colors.black),
+                            ("INNERGRID", (0, 0), (-1, -1), 0.25, colors.black),
+                            ("BOX", (0, 0), (-1, -1), 0.25, colors.black),
+                        ]
+                    )
+                )
+                Story.append(table_body)
+
+        style = getSampleStyleSheet()
+        semester = style["Normal"]
+        semester.alignment = TA_LEFT
+        semester.fontName = "Helvetica"
+        semester.fontSize = 8
+        semester.leading = 18
+        semester_title = (
+            "<b>Total Second Semester Credit : " + str(second_semester_unit) + "</b>"
+        )
+        semester_title = Paragraph(semester_title, semester)
+        Story.append(semester_title)
+
+        Story.append(Spacer(1, 2))
+        style = getSampleStyleSheet()
+        certification = style["Normal"]
+        certification.alignment = TA_JUSTIFY
+        certification.fontName = "Helvetica"
+        certification.fontSize = 8
+        certification.leading = 18
+        student = Student.objects.get(student__pk=request.user.id)
+        certification_text = (
+            "CERTIFICATION OF REGISTRATION: I certify that <b>"
+            + str(request.user.get_full_name.upper())
+            + "</b>\
+        has been duly registered for the <b>"
+            + student.level
+            + " level </b> of study in the department\
+        of INFORAMATION TECHINOLODY and that the courses and credits \
+        registered are as approved by the senate of the University"
+        )
+        certification_text = Paragraph(certification_text, certification)
+        Story.append(certification_text)
+
+        # FIRST SEMESTER ENDS HERE
+
+        logo = settings.STATICFILES_DIRS[0] + "/img/dj-lms.png"
+        im_logo = Image(logo, 1 * inch, 1 * inch)
+        im_logo.__setattr__("_offs_x", -218)
+        im_logo.__setattr__("_offs_y", 480)
+        Story.append(im_logo)
+
+        picture = str(settings.BASE_DIR) + str(request.user.get_picture())
+        im = Image(picture, 1.0 * inch, 1.0 * inch)
+        im.__setattr__("_offs_x", 218)
+        im.__setattr__("_offs_y", 550)
+        Story.append(im)
+
+        doc.build(Story)
+
+        # Return the PDF as a response
+        fs = FileSystemStorage(f"{settings.MEDIA_ROOT}/registration_form")
+        with fs.open(fname) as pdf:
+            response = HttpResponse(pdf, content_type="application/pdf")
+            response["Content-Disposition"] = f"inline; filename={fname}"
+            return response
