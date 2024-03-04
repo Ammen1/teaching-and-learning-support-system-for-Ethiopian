@@ -174,16 +174,20 @@ class AddScoreForAPIView(APIView):
 
 
 
+
+from account.serializers import StudentAddSerializer  
+
 class GradeResultAPIView(APIView):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
-    
+
     def get(self, request, *args, **kwargs):
         student = Student.objects.get(student__pk=request.user.id)
         courses = TakenCourse.objects.filter(student__student__pk=request.user.id).filter(
             course__level=student.level
         )
-        
+        student_serializer = StudentAddSerializer(student)
+
         results = Result.objects.filter(student__student__pk=request.user.id)
 
         result_set = set()
@@ -202,8 +206,6 @@ class GradeResultAPIView(APIView):
                 total_sec_semester_credit += int(i.course.credit)
 
         previousCGPA = 0
-        # previousLEVEL = 0
-        # calculate_cgpa
         for i in results:
             previousLEVEL = i.level
             try:
@@ -225,7 +227,7 @@ class GradeResultAPIView(APIView):
             "courses": courses_serializer.data,
             "results": results_serializer.data,
             "sorted_result": sorted_result,
-            "student": student,
+            "student": student_serializer.data,
             "total_first_semester_credit": total_first_semester_credit,
             "total_sec_semester_credit": total_sec_semester_credit,
             "total_first_and_second_semester_credit": total_first_semester_credit
