@@ -5,5 +5,5 @@ app_name = 'results'
 
 urlpatterns = [
     path('add-score/', AddScoreAPIView.as_view(), name='add_score_api'),
-    # Add other URL patterns as needed
+    path('add_score_for/<int:id>/', AddScoreForAPIView.as_view(), name='add_score_for_api'),
 ]
