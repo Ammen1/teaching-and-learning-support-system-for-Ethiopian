@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'course',
     'cores',
     'reult',
+    'quiz',
     
     'rest_framework',
     'corsheaders',
