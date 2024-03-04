@@ -102,7 +102,7 @@ class StudentAddSerializer(serializers.Serializer):
 
             # Send email with generated credentials
             send_mail(
-                "Your Django LMS account credentials",
+                "Your account credentials",
                 f"Your ID: {generated_username}\nYour password: {generated_password}",
                 settings.EMAIL_FROM_ADDRESS,
                 [user.email],
