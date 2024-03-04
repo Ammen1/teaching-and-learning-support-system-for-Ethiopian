@@ -13,7 +13,29 @@ from django.urls import reverse_lazy
 from .serializers import TakenCourseSerializer, ResultSerializer
 from django.contrib import messages
 from rest_framework.decorators import permission_classes
-
+from account.serializers import StudentSerializer
+from django.http import HttpResponse
+from django.core.files.storage import FileSystemStorage
+from django.conf import settings
+from django.template.loader import get_template
+from reportlab.pdfgen import canvas
+from io import BytesIO 
+from reportlab.lib.units import cm
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.platypus import Spacer
+from reportlab.lib.pagesizes import inch
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import landscape, letter
+from reportlab.platypus import (
+    SimpleDocTemplate,
+    Paragraph,
+    Spacer,
+    Table,
+    TableStyle,
+    Image,
+)
+from reportlab.lib.enums import TA_JUSTIFY, TA_LEFT, TA_CENTER, TA_RIGHT
 
 
 
@@ -174,9 +196,6 @@ class AddScoreForAPIView(APIView):
 
 
 
-
-from account.serializers import StudentAddSerializer  
-
 class GradeResultAPIView(APIView):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
@@ -186,7 +205,7 @@ class GradeResultAPIView(APIView):
         courses = TakenCourse.objects.filter(student__student__pk=request.user.id).filter(
             course__level=student.level
         )
-        student_serializer = StudentAddSerializer(student)
+        student_serializer = StudentSerializer(student)
 
         results = Result.objects.filter(student__student__pk=request.user.id)
 
@@ -236,3 +255,189 @@ class GradeResultAPIView(APIView):
         }
 
         return Response(context)
+
+
+class AssessmentResultAPIView(APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get(self, request, *args, **kwargs):
+        student = Student.objects.get(student__pk=request.user.id)
+        courses = TakenCourse.objects.filter(
+            student__student__pk=request.user.id, course__level=student.level
+        )
+        result = Result.objects.filter(student__student__pk=request.user.id)
+
+        # Serialize the data
+        courses_serializer = TakenCourseSerializer(courses, many=True)
+        result_serializer = ResultSerializer(result, many=True)
+
+        # Accessing the full_name through the related User instance
+        context = {
+            "courses": courses_serializer.data,
+            "result": result_serializer.data,
+            "student": student.student.username,  # Adjust based on your actual model structure
+        }
+
+        return Response(context)
+    
+
+
+
+class ResultSheetPDFAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, id):
+        current_semester = Semester.objects.get(is_current_semester=True)
+        current_session = Session.objects.get(is_current_session=True)
+        result = TakenCourse.objects.filter(course__pk=id)
+        course = get_object_or_404(Course, id=id)
+        no_of_pass = TakenCourse.objects.filter(course__pk=id, comment="PASS").count()
+        no_of_fail = TakenCourse.objects.filter(course__pk=id, comment="FAIL").count()
+        fname = (
+            str(current_semester)
+            + "_semester_"
+            + str(current_session)
+            + "_"
+            + str(course)
+            + "_resultSheet.pdf"
+        )
+        fname = fname.replace("/", "-")
+        flocation = settings.MEDIA_ROOT + "/result_sheet/" + fname
+
+        doc = SimpleDocTemplate(
+            flocation,
+            rightMargin=0,
+            leftMargin=1 * cm,
+            topMargin=0.3 * cm,
+            bottomMargin=0,
+        )
+        styles = getSampleStyleSheet()
+        styles.add(
+            ParagraphStyle(name="ParagraphTitle", fontSize=11, fontName="FreeSansBold")
+        )
+        Story = [Spacer(1, 0.2)]
+        style = styles["Normal"]
+
+        print("\nsettings.MEDIA_ROOT", settings.MEDIA_ROOT)
+        print("\nsettings.STATICFILES_DIRS[0]", settings.STATICFILES_DIRS[0])
+       
+
+
+        style = getSampleStyleSheet()
+        normal = style["Normal"]
+        normal.alignment = TA_CENTER
+        normal.fontName = "Helvetica"
+        normal.fontSize = 12
+        normal.leading = 15
+        title = (
+            "<b> "
+            + str(current_semester)
+            + " Semester "
+            + str(current_session)
+            + " Result Sheet</b>"
+        )
+        title = Paragraph(title.upper(), normal)
+        Story.append(title)
+        Story.append(Spacer(1, 0.1 * inch))
+
+        style = getSampleStyleSheet()
+        normal = style["Normal"]
+        normal.alignment = TA_CENTER
+        normal.fontName = "Helvetica"
+        normal.fontSize = 10
+        normal.leading = 15
+        title = "<b>Course lecturer: " + request.user.get_full_name + "</b>"
+        title = Paragraph(title.upper(), normal)
+        Story.append(title)
+        Story.append(Spacer(1, 0.1 * inch))
+
+        normal = style["Normal"]
+        normal.alignment = TA_CENTER
+        normal.fontName = "Helvetica"
+        normal.fontSize = 10
+        normal.leading = 15
+        level = result.filter(course_id=id).first()
+        title = "<b>Level: </b>" + str(level.course.level)
+        title = Paragraph(title.upper(), normal)
+        Story.append(title)
+        Story.append(Spacer(1, 0.6 * inch))
+
+        elements = []
+        count = 0
+        header = [("S/N", "ID NO.", "FULL NAME", "TOTAL", "GRADE", "POINT", "COMMENT")]
+
+        table_header = Table(header, [inch], [0.5 * inch])
+        table_header.setStyle(
+            TableStyle(
+                [
+                    ("BACKGROUND", (0, 0), (-1, -1), colors.green),
+                    ("TEXTCOLOR", (1, 0), (-1, -1), colors.white),
+                    ("TEXTCOLOR", (0, 0), (0, 0), colors.cyan),
+                    ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+                    ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                    ("BOX", (0, 0), (-1, -1), 1, colors.black),
+                ]
+            )
+        )
+        Story.append(table_header)
+
+        for student in result:
+            data = [
+                (
+                    count + 1,
+                    student.student.student.username.upper(),
+                    Paragraph(
+                        student.student.student.get_full_name.capitalize(), styles["Normal"]
+                    ),
+                    student.total,
+                    student.grade,
+                    student.point,
+                    student.comment,
+                )
+            ]
+            color = colors.black
+            if student.grade == "F":
+                color = colors.red
+            count += 1
+
+            t_body = Table(data, colWidths=[inch])
+            t_body.setStyle(
+                TableStyle(
+                    [
+                        ("INNERGRID", (0, 0), (-1, -1), 0.05, colors.black),
+                        ("BOX", (0, 0), (-1, -1), 0.1, colors.black),
+                    ]
+                )
+            )
+            Story.append(t_body)
+
+        Story.append(Spacer(1, 1 * inch))
+        style_right = ParagraphStyle(
+            name="right", parent=styles["Normal"], alignment=TA_RIGHT
+        )
+        tbl_data = [
+            [
+                Paragraph("<b>Date:</b>_____________________________", styles["Normal"]),
+                Paragraph("<b>No. of PASS:</b> " + str(no_of_pass), style_right),
+            ],
+            [
+                Paragraph(
+                    "<b>Siganture / Stamp:</b> _____________________________",
+                    styles["Normal"],
+                ),
+                Paragraph("<b>No. of FAIL: </b>" + str(no_of_fail), style_right),
+            ],
+        ]
+        tbl = Table(tbl_data)
+        Story.append(tbl)
+
+        doc.build(Story)
+
+        fs = FileSystemStorage(settings.MEDIA_ROOT + "/result_sheet")
+        with fs.open(fname) as pdf:
+            response = HttpResponse(pdf, content_type="application/pdf")
+            response["Content-Disposition"] = "inline; filename=" + fname + ""
+            return response
+        return response
+
+
