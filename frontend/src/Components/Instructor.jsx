@@ -1,4 +1,3 @@
-import React from "react";
 
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -25,7 +24,7 @@ const Instructor = () => {
         <div className="mt-16 w-[100%]">
           <Swiper
             loop={true}
-            spaceBetween={10}
+            spaceBetween={4}
             slidesPerView={4}
             allowSlideNext={true}
             allowSlidePrev={true}
@@ -62,7 +61,7 @@ const Instructor = () => {
                   <img
                     src={instructor.image}
                     alt="instructor Image"
-                    className="w-[150px] h-[150px] rounded-full"
+                    className="w-[250px] h-[250px] rounded-full"
                   />
                   <h2 className=" text-textColor text-[20px] font-[700] mt-4">
                     {instructor.name}
@@ -74,7 +73,7 @@ const Instructor = () => {
         </div>
 
         <div className=" text-center mt-12">
-          <button className="py-3 px-6 bg-brandColor rounded-md text-[#fff]">
+          <button className="py-3 px-6 bg-[#228be6] rounded-md text-[#fff]">
             View More
           </button>
         </div>
