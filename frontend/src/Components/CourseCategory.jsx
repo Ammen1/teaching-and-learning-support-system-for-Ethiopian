@@ -107,7 +107,7 @@ const CourseCategory = () => {
                       </div>
                     </div>
 
-                    <h3 className="text-[20px] md:text-[25px] font-[700] text-brandColor">
+                    <h3 className="text-[20px] md:text-[25px] font-[700] text-[#228be6]">
                       {course.price}
                     </h3>
                   </div>
@@ -124,7 +124,7 @@ const CourseCategory = () => {
                           Conduct by:
                         </p>
 
-                        <p className="text-[16px] md:text-[20px] font-[500] text-brandColor">
+                        <p className="text-[16px] md:text-[20px] font-[500] text-[#228be6]">
                           {course.instructorName}
                         </p>
                       </div>
@@ -151,7 +151,7 @@ const CourseCategory = () => {
       </div>
 
       <div className=" text-center mt-8">
-        <button className="py-3 px-6 bg-brandColor rounded-md text-[#fff]">
+        <button className="py-3 px-6 bg-[#228be6] rounded-md text-[#fff]">
           View More
         </button>
       </div>
