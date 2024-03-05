@@ -1,12 +1,13 @@
-import React from "react";
-
+import heroAnimation from '../animation/Animation 1.json';
+import Lottie from "lottie-react";
 const CourseOutlet = () => {
   return (
     <section className="w-full max-w-[1600px] mx-auto px-6 flex items-center gap-8 justify-between my-6 md:my-16 flex-col md:flex-row">
-      <img
-        src="/courseOutlet.png"
-        alt="image"
-        className="w-full md:w-[600px]"
+      <Lottie
+        animationData={heroAnimation}
+        loop
+        autoplay
+        style={{ width: '100%', maxWidth: '600px' }}
       />
       <div className="w-full md:w-[40%]">
         <h3 className="text-[20px] md:text-[30px] font-[700] text-textColor">
@@ -18,8 +19,8 @@ const CourseOutlet = () => {
           house!
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 my-8">
-          <p className="flex items-center gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 my-8 ">
+          <p className="flex items-center gap-3 ">
             <img src="/rightIcon.png" alt="icon" className="w-[20px]" />
             Online Resources
           </p>
@@ -37,7 +38,7 @@ const CourseOutlet = () => {
           </p>
         </div>
 
-        <button className="py-2 px-6 bg-brandColor rounded-md text-[#fff]">
+        <button className="py-2 px-6 bg-[#228be6] rounded-md text-[#fff]">
           Register Now
         </button>
       </div>
