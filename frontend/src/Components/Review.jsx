@@ -1,4 +1,6 @@
-import React from "react";
+import heroAnimation from '../animation/Animation 7.json';
+import Lottie from "lottie-react";
+
 
 // react icons
 import { FaArrowRight } from "react-icons/fa6";
@@ -20,21 +22,22 @@ const Review = () => {
           What do you think about us ?
         </p>
 
-        <div className="border border-brandColor rounded-md p-4 mt-8 w-full md:w-[70%]">
+        <div className="border border-[#228be6] rounded-md p-4 mt-8 w-full md:w-[70%]">
           <div className=" relative">
-            <p className="text-[14px] md:text-[18px] font-[500] text-brandColor">
+            <p className="text-[14px] md:text-[18px] font-[500] text-[#228be6]">
               Write Your Review
             </p>
-            <button className="py-4 md:py-5 px-8 rounded-full text-[#fff] bg-brandColor absolute top-[-18px] right-[-35px]">
+            <button className="py-4 md:py-5 px-8 rounded-full text-[#fff] bg-[#228be6] absolute top-[-18px] right-[-35px]">
               <FaArrowRight className="text-[1.5rem]" />
             </button>
           </div>
         </div>
       </div>
-      <img
-        src="/review.png"
-        alt="image"
-        className="w-full md:w-[500px] bg-cover"
+      <Lottie
+        animationData={heroAnimation}
+        loop
+        autoplay
+        style={{ width: '100%', maxWidth: '600px' }}
       />
     </section>
   );
