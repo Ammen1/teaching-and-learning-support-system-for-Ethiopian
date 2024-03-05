@@ -1,5 +1,4 @@
-import { Button } from "flowbite-react";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 // react icons
 import { IoIosArrowDown } from "react-icons/io";
@@ -33,10 +32,7 @@ const MobileNav = () => {
           scrolling && "backdrop-blur-lg shadow-md"
         } sticky top-0 left-0 w-full max-w-[1600px] mx-auto px-6 py-4 flex items-center justify-between gap-5 z-50 md:hidden`}
       >
-        {/* <img src="/logo.png" alt="logo" className="" /> */}
-        <h1  alt="logo" className="w-[110px] rounded-full text-center" ><span className="bg-gradient-to-t from-green-600 via-emerald-900 to-slate-800 px-2 py-1 rounded-lg text-white">TEACHING</span>SUPPORT</h1>
-
-        <RiMenu3Line
+        <h1  alt="logo" className="rounded-full text-center" ><span className="py-2 px-6 bg-[#228be6] rounded-lg text-white">TEACHING</span>SUPPORT</h1>        <RiMenu3Line
           className="text-[1.5rem] text-textColor"
           onClick={() => setIsOpen(true)}
         />
@@ -102,9 +98,9 @@ const MobileNav = () => {
           <a href="#Support">Support</a>
         </li>
 
-        <Button className="py-2 px-6 bg-brandColor rounded-md text-[#fff]">
+        <button className="py-2 px-6 bg-brandColor rounded-md text-[#fff]">
           Sign Up
-        </Button>
+        </button>
       </ul>
     </>
   );
