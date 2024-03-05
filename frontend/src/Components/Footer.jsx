@@ -1,6 +1,3 @@
-import React from "react";
-
-// react icons
 import {
   FaFacebookF,
   FaInstagram,
@@ -10,10 +7,11 @@ import {
 
 const Footer = () => {
   return (
-    <footer className="w-full max-w-[1600px] mx-auto px-6 bg-[#293845] py-12 text-[#fff]">
+    <footer className="w-full max-w-[1600px] mx-auto px-6 bg-[#228be6] border border-t-8 border-teal-500 py-12 text-[#fff]">
       <div className="flex justify-between gap-12 flex-col md:flex-row">
         <div className="w-full md:w-[30%]">
-          <img src="/footerlogo.png" alt="logo" className="w-[160px]" />
+        <h1  alt="logo" className="rounded-full text-center" ><span className="py-2 px-6 bg-[#228be6] rounded-lg text-white">TEACHING</span>SUPPORT</h1>
+
           <p className="text-[14px] font-[400] my-4">
             It’s an e-learning website where we aim to provide the best quality
             education with best instructors. We also provide the 24 hour support
@@ -83,7 +81,7 @@ const Footer = () => {
 
       <div className="w-full h-[2px] bg-[#fff] my-6"></div>
       <p className="text-center w-full">
-        Copyright @ZenUI. All Rights Reserved.
+        Copyright @TEACHING <span className="px-2 py-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg text-white">SUPPORT</span>. All Rights Reserved.
       </p>
     </footer>
   );
