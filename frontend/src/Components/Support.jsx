@@ -1,14 +1,16 @@
-import React from "react";
+import heroAnimation from '../animation/Animation 6.json';
+import Lottie from "lottie-react";
 
 const Support = () => {
   return (
     <section className="w-full mt-8 md:mt-16 bg-[#F1F7FF] overflow-hidden">
       <div className="w-full max-w-[1600px] mx-auto px-6 py-24 flex items-center justify-between gap-10 flex-col md:flex-row">
-        <img
-          src="support.png"
-          alt="image"
-          className="w-full md:w-[550px] bg-cover"
-        />
+      <Lottie
+        animationData={heroAnimation}
+        loop
+        autoplay
+        style={{ width: '100%', maxWidth: '600px' }}
+      />
 
         <div className="w-full md:w-[45%]">
           <h4 className="text-[16px] md:text-[20px] text-textColor font-[500]">
@@ -24,7 +26,7 @@ const Support = () => {
             support team.
           </p>
 
-          <button className="py-3 px-6 bg-brandColor rounded-md text-[#fff]">
+          <button className="py-3 px-6 bg-[#228be6] rounded-md text-[#fff]">
             Get Support
           </button>
         </div>
