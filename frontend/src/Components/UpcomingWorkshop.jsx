@@ -1,5 +1,3 @@
-import React from "react";
-
 // react icons
 import { CiCalendarDate } from "react-icons/ci";
 
@@ -105,12 +103,12 @@ const UpcomingWorkshop = () => {
                         className="w-[30px] md:w-[40px] h-[30px] md:h-[40px] bg-cover rounded-full absolute top-[-20px] left-[60px] "
                       />
 
-                      <div className="bg-brandColor text-[#fff] w-[30px] md:w-[40px] h-[30px] md:h-[40px] rounded-full text-[12px] md:text-[16px] absolute top-[-20px] left-[80px] flex items-center justify-center">
+                      <div className="bg-[#228be6] text-[#fff] w-[30px] md:w-[40px] h-[30px] md:h-[40px] rounded-full text-[12px] md:text-[16px] absolute top-[-20px] left-[80px] flex items-center justify-center">
                         19+
                       </div>
                     </div>
 
-                    <button className="py-2 md:py-3 px-4 md:px-6 bg-brandColor rounded-md text-[#fff]">
+                    <button className="py-2 md:py-3 px-4 md:px-6 bg-[#228be6] rounded-md text-[#fff]">
                       Book Now
                     </button>
                   </div>
