@@ -29,7 +29,7 @@ const Navbar = () => {
         scrolling && "backdrop-blur-lg shadow-md"
       } sticky top-0 left-0 w-full max-w-[1600px] mx-auto px-6 py-4 items-center justify-between gap-5 z-50 hidden md:flex`}
     >
-      <h1  alt="logo" className="rounded-full text-center" ><span className="py-2 px-6 bg-brandColor rounded-lg text-white">TEACHING</span>SUPPORT</h1>
+      <h1  alt="logo" className="rounded-full text-center" ><span className="py-2 px-6 bg-[#228be6] rounded-lg text-white">TEACHING</span>SUPPORT</h1>
       <ul className="flex items-center gap-12 font-[500] text-textColor z-50">
         <li>
           <a href="#home">Home</a>
@@ -79,7 +79,7 @@ const Navbar = () => {
           <a href="#Support">Support</a>
         </li>
 
-        <Button className=" bg-brandColor rounded-md text-[#fff]">
+        <Button className=" bg-[#228be6] rounded-md text-[#fff]">
           Sign Up
         </Button>
       </ul>
