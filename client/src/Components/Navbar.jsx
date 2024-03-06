@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button } from 'flowbite-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 // react icons
 import { IoIosArrowDown } from "react-icons/io";
@@ -78,10 +79,14 @@ const Navbar = () => {
         <li>
           <a href="#Support">Support</a>
         </li>
+    
 
         <Button className="bg-[#228be6]  rounded-md text-[#fff]">
           Login
         </Button>
+       
+      
+          
       </ul>
     </nav>
   );
