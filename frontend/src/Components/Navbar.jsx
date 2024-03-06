@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Card } from 'flowbite-react';
+import { Button } from 'flowbite-react';
 
 // react icons
 import { IoIosArrowDown } from "react-icons/io";
@@ -27,9 +27,9 @@ const Navbar = () => {
     <nav
       className={`${
         scrolling && "backdrop-blur-lg shadow-md"
-      } sticky top-0 left-0 w-full max-w-[1600px] mx-auto px-6 py-4 items-center justify-between gap-5 z-50 hidden md:flex`}
+      } sticky top-0 left-0 w-full max-w-[1600px] mx-auto px-6 py-4 items-center justify-between gap-5 z-50 hidden md:flex shadow-lg`}
     >
-      <h1  alt="logo" className="rounded-full text-center" ><span className="py-2 px-6 bg-[#228be6] rounded-lg text-white">TEACHING</span>SUPPORT</h1>
+      <img src="Company/R.png"  alt="logo" className="w-[150px]"/>
       <ul className="flex items-center gap-12 font-[500] text-textColor z-50">
         <li>
           <a href="#home">Home</a>
@@ -79,8 +79,8 @@ const Navbar = () => {
           <a href="#Support">Support</a>
         </li>
 
-        <Button className=" bg-[#228be6] rounded-md text-[#fff]">
-          Sign Up
+        <Button className="bg-[#228be6]  rounded-md text-[#fff]">
+          Login
         </Button>
       </ul>
     </nav>

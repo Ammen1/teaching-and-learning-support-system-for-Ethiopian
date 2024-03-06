@@ -78,11 +78,11 @@ const CourseCategory = () => {
         >
           {courseData?.map((course, index) => (
             <SwiperSlide>
-              <div className="bg-[#F6F6F6]">
+              <div className="bg-white rounded-sm border ">
                 <img
                   src={course.image}
                   alt="image"
-                  className="w-full h-[200px] md:h-[250px] bg-cover"
+                  className="w-full h-[200px] md:h-[250px] bg-cover "
                 />
 
                 <div className="w-full p-4">

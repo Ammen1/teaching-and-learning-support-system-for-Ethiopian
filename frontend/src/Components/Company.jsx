@@ -9,25 +9,36 @@ const Company = () => {
         </p>
         <div className="flex items-center gap-8 md:gap-16 overflow-y-scroll md:overflow-y-hidden">
           <img
-            src="/Company/Google.png"
+            src="/Company/OIP.jpg"
             alt="company"
-            className="w-[80px] md:w-[100px]"
+            className="w-[40px] md:w-[70px] rounded-full"
           />
           <img
-            src="/Company/Hexa.png"
+            src="/Company/4.png"
             alt="company"
-            className="w-[80px] md:w-[100px]"
+            className="w-[40px] md:w-[70px] rounded-full"
           />
           <img
-            src="/Company/Ideaa.png"
+            src="/Company/4.png"
             alt="company"
-            className="w-[80px] md:w-[100px]"
+            className="w-[40px] md:w-[70px] rounded-full"
           />
           <img
-            src="/Company/Meta.png"
+            src="/Company/2.jpg"
             alt="company"
-            className="w-[80px] md:w-[100px]"
+            className="w-[40px] md:w-[70px] rounded-full"
           />
+                    <img
+            src="/Company/4.png"
+            alt="company"
+            className="w-[40px] md:w-[70px] rounded-full"
+          />
+          <img
+            src="/Company/2.jpg"
+            alt="company"
+            className="w-[40px] md:w-[70px] rounded-full"
+          />
+          
         </div>
       </div>
     </section>

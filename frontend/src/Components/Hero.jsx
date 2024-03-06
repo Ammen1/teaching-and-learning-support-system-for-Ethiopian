@@ -10,7 +10,7 @@ const Hero = () => {
           Easier Now!
         </h1>
         <p className="text-[16px] md:text-[20px] font-[500] text-textColor mt-3 w-full md:w-[50%]">
-          This is the future of learning. Learn right & Grow!
+        Your E-Learning Platform Unlock the Power of Education in Ethiopia!
         </p>
 
         <div className="flex items-center gap-5 mt-8">
@@ -27,7 +27,7 @@ const Hero = () => {
         animationData={heroAnimation}
         loop
         autoplay
-        style={{ width: '100%', maxWidth: '600px' }}
+        style={{ width: '100%', maxWidth: '600px' }} className=" rounded-lg"
       />
     </header>
   );

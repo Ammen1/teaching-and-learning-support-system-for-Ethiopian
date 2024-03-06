@@ -22,7 +22,7 @@ const UpcomingWorkshop = () => {
         Upcoming Workshops
       </h2>
 
-      <div className=" mt-6 w-[100%]">
+      <div className=" mt-6 w-[100%] ">
         <Swiper
           loop={true}
           spaceBetween={50}
@@ -58,7 +58,7 @@ const UpcomingWorkshop = () => {
         >
           {upcomingWorkshop?.map((workshop, index) => (
             <SwiperSlide>
-              <div key={index} className=" shadow-lg">
+              <div key={index} className=" shadow-lg bg-white rounded-sm border">
                 <img
                   src={workshop.image}
                   alt="image"
