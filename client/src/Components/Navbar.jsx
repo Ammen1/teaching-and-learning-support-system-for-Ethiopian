@@ -27,14 +27,14 @@ const Navbar = () => {
   return (
     <FlowBiteNavbar
       className={`${
-        scrolling && " shadow-md"
-      } sticky  z-50 hidden md:flex shadow-lg`}
+        scrolling && "backdrop-blur-lg shadow-md"
+      } sticky top-0 left-0 w-full max-w-[1600px] mx-auto px-6 py-4  z-50 hidden md:flex shadow-lg`}
+
     >
-      <div className="flex items-center">
-        <img src="Company/R.png"  alt="logo" className="w-[150px]"/>
-        
+      
+      <div className="flex items-center mr-16">
+      <img src="Company/R.png"  alt="logo" className="w-[150px] mr-40"/> 
         <a href="#home" className="ml-6 text-textColor hover:text-brandColor transition-all duration-300">Home</a>
-        
         <div className="ml-6 overflow-hidden hover:overflow-visible group relative">
           <a href="#Courses" className="flex items-center gap-3 text-textColor hover:text-brandColor transition-all duration-300">
             Courses{" "}
@@ -58,8 +58,8 @@ const Navbar = () => {
         </div>
       </div>
 
-      <div className="flex items-center">
-        <Link to='/sign-in' className="mr-6">
+      <div className="flex items-center  ml-96 translate-x-18 ">
+        <Link to='/sign-in' className="mr-6 w-full">
           <Button className=" bg-brandColor rounded-md text-[#fff]">
             Sign Up
           </Button>

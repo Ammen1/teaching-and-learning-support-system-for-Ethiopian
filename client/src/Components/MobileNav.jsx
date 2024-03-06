@@ -32,7 +32,7 @@ const MobileNav = () => {
           scrolling && "backdrop-blur-lg shadow-md"
         } sticky top-0 left-0 w-full max-w-[1600px] mx-auto px-6 py-4 flex items-center justify-between gap-5 z-50 md:hidden`}
       >
-        <h1  alt="logo" className="rounded-full text-center" ><span className="py-2 px-6 bg-[#228be6] rounded-lg text-white">TEACHING</span>SUPPORT</h1>        <RiMenu3Line
+                <img src="Company/R.png"  alt="logo" className="w-[150px]"/>       <RiMenu3Line
           className="text-[1.5rem] text-textColor"
           onClick={() => setIsOpen(true)}
         />
