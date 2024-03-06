@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button } from 'flowbite-react';
+import { Button, Navbar as FlowBiteNavbar } from 'flowbite-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 // react icons
@@ -25,23 +25,23 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav
+    <FlowBiteNavbar
       className={`${
-        scrolling && "backdrop-blur-lg shadow-md"
-      } sticky top-0 left-0 w-full max-w-[1600px] mx-auto px-6 py-4 items-center justify-between gap-5 z-50 hidden md:flex shadow-lg`}
+        scrolling && " shadow-md"
+      } sticky  z-50 hidden md:flex shadow-lg`}
     >
-      <img src="Company/R.png"  alt="logo" className="w-[150px]"/>
-      <ul className="flex items-center gap-12 font-[500] text-textColor z-50">
-        <li>
-          <a href="#home">Home</a>
-        </li>
-        <li className=" overflow-hidden hover:overflow-visible group relative">
-          <a href="#Courses" className="flex items-center gap-3">
+      <div className="flex items-center">
+        <img src="Company/R.png"  alt="logo" className="w-[150px]"/>
+        
+        <a href="#home" className="ml-6 text-textColor hover:text-brandColor transition-all duration-300">Home</a>
+        
+        <div className="ml-6 overflow-hidden hover:overflow-visible group relative">
+          <a href="#Courses" className="flex items-center gap-3 text-textColor hover:text-brandColor transition-all duration-300">
             Courses{" "}
             <IoIosArrowDown className=" group-hover:rotate-[180deg] transition-all duration-300" />
           </a>
 
-          <div className="flex flex-col gap-5 w-[250px] shadow-drop p-6 translate-y-[100px] opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 absolute top-[25px] left-0 bg-[#fff]">
+          <div className="flex flex-col gap-3 w-[200px] shadow-drop p-4 translate-y-[100px] opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 absolute top-[25px] left-0 bg-[#fff]">
             <p className="hover:text-brandColor hover:tracking-wider transition-all duration-300 cursor-pointer">
               Web Development
             </p>
@@ -55,40 +55,17 @@ const Navbar = () => {
               AI Robotics
             </p>
           </div>
-        </li>
-        <li className=" overflow-hidden hover:overflow-visible group relative">
-          <a href="#Article" className="flex items-center gap-3">
-            Articles
-            <IoIosArrowDown className=" group-hover:rotate-[180deg] transition-all duration-300" />
-          </a>
-          <div className="flex flex-col gap-5 w-[250px] shadow-drop p-6 translate-y-[100px] opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 absolute top-[25px] left-0 bg-[#fff]">
-            <p className="hover:text-brandColor hover:tracking-wider transition-all duration-300 cursor-pointer">
-              Web Development
-            </p>
-            <p className="hover:text-brandColor hover:tracking-wider transition-all duration-300 cursor-pointer">
-              Website SEO
-            </p>
-            <p className="hover:text-brandColor hover:tracking-wider transition-all duration-300 cursor-pointer">
-              System Design
-            </p>
-            <p className="hover:text-brandColor hover:tracking-wider transition-all duration-300 cursor-pointer">
-              Remote Job
-            </p>
-          </div>
-        </li>
-        <li>
-          <a href="#Support">Support</a>
-        </li>
-    
+        </div>
+      </div>
 
-        <Button className="bg-[#228be6]  rounded-md text-[#fff]">
-          Login
-        </Button>
-       
-      
-          
-      </ul>
-    </nav>
+      <div className="flex items-center">
+        <Link to='/sign-in' className="mr-6">
+          <Button className=" bg-brandColor rounded-md text-[#fff]">
+            Sign Up
+          </Button>
+        </Link>
+      </div>
+    </FlowBiteNavbar>
   );
 };
 

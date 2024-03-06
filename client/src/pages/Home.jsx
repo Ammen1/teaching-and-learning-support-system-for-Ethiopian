@@ -1,6 +1,6 @@
 
 // all components
-import Navbar from "../Components/Navbar";
+
 import Hero from "../Components/Hero";
 import Company from "../Components/Company";
 import CourseOutlet from "../Components/CourseOutlet";
@@ -17,7 +17,6 @@ const App = () => {
   return (
     <div className=" overflow-hidden">
       <MobileNav />
-      <Navbar />
       <Hero />
       <Company />
       <CourseOutlet />
