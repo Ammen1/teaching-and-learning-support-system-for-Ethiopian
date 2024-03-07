@@ -1,5 +1,7 @@
 import Lottie from "lottie-react";
 import heroAnimation from '../animation/Animation 2.json';
+import { Link, useLocation } from 'react-router-dom';
+import { Button } from "flowbite-react";
 
 const Hero = () => {
   return (
@@ -14,12 +16,20 @@ const Hero = () => {
         </p>
 
         <div className="flex items-center gap-5 mt-8">
-          <button className="py-2 px-6 bg-[#228be6] rounded-md text-[#fff]">
-            Get Started
+          <button className="">
+            
           </button>
-          <button className="py-2 px-6 border bg-[#228be6] rounded-md  text-white">
-            Try Free
-          </button>
+          <Link to='/sign-in'>
+          <Button gradientDuoTone='purpleToBlue' className="border-2 py-2 px-2 bg-[#228be6] rounded-md text-[#fff]">
+          Get Started
+          </Button>
+        </Link>
+        {/* <Link to='/sign-in'>
+          <Button gradientDuoTone='purpleToBlue' className="border-2 py-2 px-2 bg-[#228be6] rounded-md text-[#fff]">
+          Try Free
+          </Button>
+        </Link> */}
+
         </div>
       </div>
 
@@ -27,7 +37,7 @@ const Hero = () => {
         animationData={heroAnimation}
         loop
         autoplay
-        style={{ width: '100%', maxWidth: '600px' }} className=" rounded-lg"
+        style={{ width: '80%', maxWidth: '600px' }} className=" rounded-lg overflow-hidden bg-cover"
       />
     </header>
   );

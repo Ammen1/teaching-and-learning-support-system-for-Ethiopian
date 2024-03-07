@@ -45,13 +45,27 @@ export default function SignIn() {
   return (
     <div className='min-h-screen mt-20'>
       <div className='flex p-3 max-w-3xl mx-auto flex-col md:flex-row md:items-center gap-5'>
-          <div className='flex-1'>
+        {/* left */}
+        <div className='flex-1'>
+        <Link
+          to='/'
+          className='self-center whitespace-nowrap text-sm sm:text-xl font-semibold text-white'
+        >
+          <img src="Company/R.png" alt="logo" className="w-[150px] px-2 py-2 bg-gradient-to-r from-indigo-500 rounded-lg" />
+        </Link>
+          <p className='text-sm mt-5'>
+          Studying Online Is Much Easier Now! Your E-Learning Platform Unlock the Power of Education in Ethiopia!
+          </p>
+        </div>
+        {/* right */}
+
+        <div className='flex-1'>
           <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
             <div>
               <Label value='Your email' />
               <TextInput
                 type='email'
-                placeholder='name@gamil.com'
+                placeholder='name@company.com'
                 id='email'
                 onChange={handleChange}
               />
@@ -79,7 +93,7 @@ export default function SignIn() {
                 'Sign In'
               )}
             </Button>
-           
+          
           </form>
           <div className='flex gap-2 text-sm mt-5'>
             <span>Dont Have an account?</span>

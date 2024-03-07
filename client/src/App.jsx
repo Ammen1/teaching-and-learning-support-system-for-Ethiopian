@@ -3,7 +3,7 @@ import Home from './pages/Home';
 import Footer from "./Components/Footer";
 import SignIn from './pages/SignIn';
 import Navbar from './Components/Navbar';
-
+import ScrollToTop from './Components/ScrollToTop';
 
 
 
@@ -11,6 +11,7 @@ import Navbar from './Components/Navbar';
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Navbar />
       <Routes>
         <Route path='/' element={<Home />} />
