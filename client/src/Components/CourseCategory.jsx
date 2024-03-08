@@ -3,6 +3,8 @@ import { Card, Button } from 'flowbite-react';
 import { IoTimeOutline } from "react-icons/io5";
 import { TiStarFullOutline } from "react-icons/ti";
 import { courseData } from "../Data/Course";
+import Lottie from "lottie-react";
+import heroAnimation from '../animation/Animation 1.json';
 
 const CourseCategory = () => {
   return (
@@ -68,11 +70,11 @@ const CourseCategory = () => {
 
                 <div className="flex items-center justify-between w-full mt-4">
                   <div className="flex items-center gap-3">
-                    <img
-                      src="avatar.png"
-                      alt="avatar"
-                      className="w-[40px] md:w-[50px]"
-                    />
+                  <Lottie animationData={heroAnimation}
+                   loop
+                  autoplay
+                 style={{ width: '80%', maxWidth: '600px' }} className=" rounded-lg overflow-hidden bg-cover"
+      />
                     <div className="flex flex-col">
                       <p className="text-[12px] md:text-[20px] font-[500] text-textColor">
                         Conduct by:
@@ -98,15 +100,15 @@ const CourseCategory = () => {
                   </div>
                 </div>
               </div>
+              <div className="text-center mt-8">
+                <Button className="py-3 px-6 bg-[#228be6] rounded-md text-[#fff]"> 
+                View More
+                </Button>
+              </div>
             </Card>
           ))}
         </div>
-      </div>
 
-      <div className="text-center mt-8">
-        <Button className="py-3 px-6 bg-[#228be6] rounded-md text-[#fff]">
-          View More
-        </Button>
       </div>
     </section>
   );
