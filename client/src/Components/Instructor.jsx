@@ -59,9 +59,9 @@ const Instructor = () => {
               <SwiperSlide>
                 <div className="flex flex-col items-center justify-center">
                   <img
-                    src={instructor.image}
+                    src={instructor.image} 
                     alt="instructor Image"
-                    className="w-[250px] h-[250px] rounded-full"
+                    className="w-[250px] h-[250px] rounded-full "
                   />
                   <h2 className=" text-textColor text-[20px] font-[700] mt-4">
                     {instructor.name}
