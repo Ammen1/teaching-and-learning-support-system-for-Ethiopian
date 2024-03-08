@@ -7,19 +7,16 @@ import {
   HiAnnotation,
   HiChartPie,
   HiCalendar,
-  HiShoppingBag,
+  HiOutlineCursorClick,
   HiCloudDownload,
   HiSupport,
   HiPresentationChartBar,
-  HiOutlineMinusSm ,
-  HiOutlinePlusSm,
 } from 'react-icons/hi';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { signoutSuccess } from '../redux/user/userSlice';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import { twMerge } from 'tailwind-merge';
 
 export default function DashSidebar() {
   const location = useLocation();
@@ -49,7 +46,7 @@ export default function DashSidebar() {
     }
   };
   return (
-    <Sidebar className='w-full md:w-56 border-l bg-slate-100'>
+    <Sidebar className='w-full md:w-56'>
       <Sidebar.Items>
         <Sidebar.ItemGroup className='flex flex-col gap-1'>
           {currentUser && (
@@ -63,20 +60,6 @@ export default function DashSidebar() {
               </Sidebar.Item>
             </Link>
           )}
-            <Sidebar.Collapse
-            icon={HiShoppingBag}
-            label="E-Leanring"
-            renderChevronIcon={(theme, open) => {
-              const IconComponent = open ? HiOutlineMinusSm : HiOutlinePlusSm;
-
-              return <IconComponent aria-hidden className={twMerge(theme.label.icon.open[open ? 'on' : 'off'])} />;
-            }}
-          >
-            <Sidebar.Item href="/dashboard?tab=users">Resources</Sidebar.Item>
-            <Sidebar.Item href="/dashboard?tab=users"> Discussion </Sidebar.Item>
-            <Sidebar.Item href="/dashboard?tab=users">Progress Tracker</Sidebar.Item>
-            <Sidebar.Item href="#">Shipping</Sidebar.Item>
-          </Sidebar.Collapse>
           <Link to='/dashboard?tab=profile'>
             <Sidebar.Item
               active={tab === 'profile'}
@@ -110,9 +93,9 @@ export default function DashSidebar() {
                   Users
                 </Sidebar.Item>
               </Link>
-              <Link to='/dashboard?tab=users'>
+              <Link to='/dashboard?tab=course'>
                 <Sidebar.Item
-                  active={tab === 'users'}
+                  active={tab === 'course'}
                   icon={HiCloudDownload}
                   as='div'
                 >
@@ -130,7 +113,35 @@ export default function DashSidebar() {
                 
                 </Sidebar.Item>
               </Link>
-             
+              <Link to='/dashboard?tab=users'>
+                <Sidebar.Item
+                  active={tab === 'users'}
+                  icon={HiPresentationChartBar}
+                  as='div'
+                >
+                  Progress Tracker
+                </Sidebar.Item>
+              </Link>
+              <Link to='/dashboard?tab=users'>
+                <Sidebar.Item
+                  active={tab === 'users'}
+                  icon={HiOutlineUserGroup}
+                  as='div'
+                >
+                  Discussion 
+ 
+                </Sidebar.Item>
+              </Link>
+              <Link to='/dashboard?tab=users'>
+                <Sidebar.Item
+                  active={tab === 'users'}
+                  icon={HiOutlineCursorClick}
+                  as='div'
+                >
+                 Resources 
+ 
+                </Sidebar.Item>
+              </Link>
               <Link to='/dashboard?tab=users'>
                 <Sidebar.Item
                   active={tab === 'users'}
