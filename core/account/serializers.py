@@ -15,6 +15,16 @@ from django.utils.http import urlsafe_base64_encode
 
 User = get_user_model()
 
+
+from rest_framework import serializers
+
+
+
+class UserLoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField(write_only=True)
+
+
 class StaffAddSerializer(serializers.Serializer):
     first_name = serializers.CharField(max_length=30)
     last_name = serializers.CharField(max_length=30)
