@@ -66,7 +66,9 @@ MIDDLEWARE = [
 AUTH_USER_MODEL = "account.User"
 
 CORS_ALLOW_ALL_ORIGINS =True
-
+SIMPLE_JWT = {
+    'AUTH_HEADER_TYPES': ('JWT',),
+}
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
@@ -76,6 +78,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.BasicAuthentication",
     ],
 }
+
 
 ROOT_URLCONF = 'core.urls'
 
@@ -96,6 +99,11 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'core.wsgi.application'
+
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # Adjust this to your frontend origin
+]
 
 
 # Database
