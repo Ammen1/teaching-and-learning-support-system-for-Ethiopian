@@ -21,14 +21,16 @@ const Hero = () => {
           </button>
           <Link to='/sign-in'>
           <Button gradientDuoTone='purpleToBlue' className="border-2 py-2 px-2 bg-[#228be6] rounded-md text-[#fff]">
-          Get Started
+            Get Started
           </Button>
         </Link>
-        {/* <Link to='/sign-in'>
+
+        <Link to='/try-free'>
           <Button gradientDuoTone='purpleToBlue' className="border-2 py-2 px-2 bg-[#228be6] rounded-md text-[#fff]">
-          Try Free
+            Try Free
           </Button>
-        </Link> */}
+        </Link>
+
 
         </div>
       </div>
