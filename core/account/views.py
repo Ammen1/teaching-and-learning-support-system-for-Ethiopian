@@ -12,6 +12,58 @@ from course.models import Program
 from .serializers import StaffAddSerializer, StudentAddSerializer, ProfileUpdateSerializer, EmailValidationOnForgotPasswordSerializer, ParentAddSerializer
 from django.db import transaction
 
+from rest_framework.views import APIView
+
+
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializers import UserLoginSerializer
+
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        token['username'] = user.username
+        return token
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+    permission_classes = [AllowAny]  # Allow any user to obtain a token
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        response_data = {
+            'access_token': str(serializer.validated_data['access']),
+            'refresh_token': str(serializer.validated_data['refresh']),
+            'username': user.username,
+            'user_role': user.get_user_role,  # Custom method to get user role
+        }
+        return Response(response_data)
+
+
+
+class UserLoginView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = UserLoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data
+        refresh = RefreshToken.for_user(user)
+        access_token = str(refresh.access_token)
+
+        return Response({"access_token": access_token}, status=status.HTTP_200_OK)
+
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
+
 
 class StaffAddView(generics.CreateAPIView):
     serializer_class = StaffAddSerializer
