@@ -29,7 +29,6 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super().get_token(user)
         token['username'] = user.username
-        token['role'] = user.get_user_role()
         return token
 
 class MyTokenObtainPairView(TokenObtainPairView):
@@ -44,7 +43,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
             'access_token': str(serializer.validated_data['access']),
             'refresh_token': str(serializer.validated_data['refresh']),
             'username': user.username,
-            'role': user.get_user_role(),  # Custom method to get user role
+            'user_role': user.get_user_role,  # Custom method to get user role
         }
         return Response(response_data)
 
