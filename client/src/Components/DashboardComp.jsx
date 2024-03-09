@@ -23,7 +23,7 @@ export default function DashboardComp() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await fetch('/api/user/getusers?limit=5');
+        const res = await fetch('/api/account/getusers/');
         const data = await res.json();
         if (res.ok) {
           setUsers(data.users);
@@ -60,14 +60,14 @@ export default function DashboardComp() {
         console.log(error.message);
       }
     };
-    if (currentUser.isAdmin) {
+    if (currentUser) {
       fetchUsers();
       fetchPosts();
       fetchComments();
     }
   }, [currentUser]);
   return (
-    <div className='p-3 md:mx-auto'>
+    <div className='p-3 md:mx-auto mt-20'>
       <div className='flex-wrap flex gap-4 justify-center'>
         <div className='flex flex-col p-3 dark:bg-slate-800 gap-4 md:w-72 w-full rounded-md shadow-md'>
           <div className='flex justify-between'>
