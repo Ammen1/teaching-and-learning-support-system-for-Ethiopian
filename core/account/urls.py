@@ -1,8 +1,6 @@
 from django.urls import path
-from .views import StaffAddView, StudentAddView, EmailValidationOnForgotPasswordView, ParentAddView, ProfileUpdateView
+from .views import *
 from .views import UserLoginView, MyTokenObtainPairView
-
-app_name = 'account' 
 
 urlpatterns = [
     path('login/', UserLoginView.as_view(), name='login'),
@@ -12,4 +10,5 @@ urlpatterns = [
     path('profile/update/<int:pk>/', ProfileUpdateView.as_view(), name='profile-update'),
     path('forgot-password/', EmailValidationOnForgotPasswordView.as_view(), name='forgot-password'),
     path('parent/add/', ParentAddView.as_view(), name='parent-add'),
+    path('getusers/', UserListView.as_view(), name='getusers'),
 ]

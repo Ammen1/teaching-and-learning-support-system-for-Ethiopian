@@ -17,7 +17,7 @@ export default function DashUsers() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await fetch(`/api/user/getusers`);
+        const res = await fetch(`/api/account/getusers`);
         const data = await res.json();
         console.log("Fetch Users Response:", data);
         if (res.ok) {
@@ -70,7 +70,7 @@ export default function DashUsers() {
   };
 
   const handleAddManager = async () => {
-    if (currentUser.isAdmin) {
+    if (currentUser) {
       navigate("/add-users");
     } else {
       console.log("You do not have permission to add a manager.");
@@ -78,11 +78,11 @@ export default function DashUsers() {
   };
 
   return (
-    <div className="table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500">
+    <div className="table-auto mt-24 overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500">
       <Button className="right-0" onClick={handleAddManager}>
         Add Manager
       </Button>
-      {currentUser.isAdmin && users.length > 0 ? (
+      {currentUser && users.length > 0 ? (
         <>
           <Table hoverable className="shadow-md mt-10">
             <Table.Head>
@@ -91,10 +91,6 @@ export default function DashUsers() {
               <Table.HeadCell>Username</Table.HeadCell>
               <Table.HeadCell>Email</Table.HeadCell>
               <Table.HeadCell>Admin</Table.HeadCell>
-              <Table.HeadCell>Manager</Table.HeadCell>
-              <Table.HeadCell>Finance</Table.HeadCell>
-              <Table.HeadCell>Supplier</Table.HeadCell>
-              <Table.HeadCell>Employee</Table.HeadCell>
               <Table.HeadCell>Delete</Table.HeadCell>
             </Table.Head>
             {users.map((user) => (
@@ -103,17 +99,10 @@ export default function DashUsers() {
                   <Table.Cell>
                     {new Date(user.createdAt).toLocaleDateString()}
                   </Table.Cell>
-                  <Table.Cell>
-                    <img
-                      src={user.profilePicture}
-                      alt={user.username}
-                      className="w-10 h-10 object-cover bg-gray-500 rounded-full"
-                    />
-                  </Table.Cell>
                   <Table.Cell>{user.username}</Table.Cell>
                   <Table.Cell>{user.email}</Table.Cell>
                   <Table.Cell>
-                    {user.isAdmin ? (
+                    {user ? (
                       <FaCheck className="text-green-500" />
                     ) : (
                       <FaTimes className="text-red-500" />

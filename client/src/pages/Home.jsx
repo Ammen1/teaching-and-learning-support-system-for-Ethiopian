@@ -13,10 +13,11 @@ import Review from "../Components/Review";
 import Support from "../Components/Support";
 import MobileNav from "../Components/MobileNav";
 import Navbar from '../Components/Navbar';
+import { CiGlass } from "react-icons/ci";
 
 const App = () => {
   return (
-    <> 
+    <div className=" dark:bg-white"> 
       <Navbar />
       <MobileNav />
       <Hero />
@@ -29,7 +30,7 @@ const App = () => {
       <UpcomingWorkshop />
       <Review />
       <Support />
-    </>
+    </div>
   );
 };
 

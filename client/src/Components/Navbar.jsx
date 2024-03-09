@@ -34,7 +34,7 @@ const Navbar = () => {
     <FlowBiteNavbar
       className={`${
         scrolling ? "scrolled" : ""
-      } border-b-2 p-2  sm:block hidden `}
+      } border-b-2 p-2  sm:block hidden dark:bg-white `}
     >
       <div className="flex items-center mr-16">
         <Link

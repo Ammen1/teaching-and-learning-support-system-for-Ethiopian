@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import DashSidebar from '../Components/DashSidebar';
 import DashProfile from '../Components/DashProfile';
 import DashPosts from '../Components/DashPosts';
 import DashUsers from '../Components/DashUsers';
 import DashComments from '../Components/DashComments';
 import DashboardComp from '../Components/DashboardComp';
 import Courses from './Courses';
+import DashHome from '../Components/DashHome';
+import Resources from '../Components/Resources';
 
 export default function Dashboard() {
   const location = useLocation();
@@ -19,22 +20,18 @@ export default function Dashboard() {
     }
   }, [location.search]);
   return (
-    <div className='min-h-screen flex flex-col md:flex-row'>
+    <div className='min-h-screen flex flex-col md:flex-row  '>
       <div className='md:w-56'>
-        {/* Sidebar */}
-        <DashSidebar />
+        <DashHome />
       </div>
-      {/* profile... */}
+   
       {tab === 'profile' && <DashProfile />}
-      {/* posts... */}
       {tab === 'posts' && <DashPosts />}
-      {/* users */}
       {tab === 'users' && <DashUsers />}
-      {/* comments  */}
-      {tab === 'comments' && <DashComments />}
-      {/* dashboard comp */}
+      {tab === 'comments' && <DashComments />}   
       {tab === 'dash' && <DashboardComp />}
       {tab === 'course' && <Courses />}
+      {tab === 'resources' && <Resources />}
     </div>
   );
 }

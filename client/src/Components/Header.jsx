@@ -49,7 +49,7 @@ export default function Header() {
   };
 
   return (
-    <Navbar className='border-b-2  p-4 dark:bg-[rgb(13,13,37)]'>
+    <Navbar className='border-b-2 p-4'>
       <Link
         to='/'
         className='self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white'
@@ -75,8 +75,8 @@ export default function Header() {
       </Button>
       <div className='flex gap-2 md:order-2'>
         <Button
-          className='w-12 h-10 hidden sm:inline dark:bg-black'
-          color='gray'
+          className='w-12 h-12 hidden sm:inline border rounded-full'
+          color='black'
           pill
           onClick={() => dispatch(toggleTheme())}
         >

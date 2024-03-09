@@ -10,15 +10,49 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
-
-
+from .models import DepartmentHead
 
 User = get_user_model()
 
+class UserSerializer(serializers.ModelSerializer):
+    student_count = serializers.SerializerMethodField()
+    lecturer_count = serializers.SerializerMethodField()
+    superuser_count = serializers.SerializerMethodField()
 
-from rest_framework import serializers
+    class Meta:
+        model = User
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['user_role'] = instance.get_user_role
+        representation['picture_url'] = instance.get_picture()
+        return representation
+
+    def get_student_count(self, instance):
+        return instance.get_student_count()
+
+    def get_lecturer_count(self, instance):
+        return instance.get_lecturer_count()
+
+    def get_superuser_count(self, instance):
+        return instance.get_superuser_count()
 
 
+class StudentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = '__all__'
+
+class ParentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Parent
+        fields = '__all__'
+
+class DepartmentHeadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DepartmentHead
+        fields = '__all__'
 
 class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField()
@@ -64,17 +98,13 @@ class StaffAddSerializer(serializers.Serializer):
 
             return user
 
-class StudentSerializer(serializers.Serializer):
-    class Meta:
-        model =Student
-        fields = '__all__'
-    
+
 
 class StudentAddSerializer(serializers.Serializer):
     first_name = serializers.CharField(max_length=30)
     last_name = serializers.CharField(max_length=30)
     gender = serializers.ChoiceField(choices=GENDERS)
-    program = serializers.PrimaryKeyRelatedField(queryset=Program.objects.all())  
+    program = serializers.PrimaryKeyRelatedField(queryset=Program.objects.all())
     email = serializers.EmailField()
     phone = serializers.CharField(max_length=30)
 
@@ -123,6 +153,7 @@ class StudentAddSerializer(serializers.Serializer):
 
             return user
 
+
 class ProfileUpdateSerializer(serializers.Serializer):
     first_name = serializers.CharField()
     last_name = serializers.CharField()
@@ -142,8 +173,6 @@ class ProfileUpdateSerializer(serializers.Serializer):
         return instance
 
 
-
-
 class EmailValidationOnForgotPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
@@ -151,14 +180,10 @@ class EmailValidationOnForgotPasswordSerializer(serializers.Serializer):
         if not User.objects.filter(email__iexact=value, is_active=True).exists():
             raise serializers.ValidationError("There is no user registered with the specified E-mail address.")
         return value
-    
 
     def create(self, validated_data):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
         try:
-            validated_email = serializer.validated_data['email']
+            validated_email = validated_data['email']
             # Try to get a single user with the specified email
             user = User.objects.get(email__iexact=validated_data['email'])
         except User.DoesNotExist:

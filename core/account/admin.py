@@ -7,11 +7,13 @@ class UserAdmin(admin.ModelAdmin):
         "get_full_name",
         "username",
         "email",
+        "is_superuser",
         "is_active",
         "is_student",
         "is_lecturer",
         "is_parent",
         "is_staff",
+        
     ]
     search_fields = [
         "username",

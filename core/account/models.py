@@ -117,6 +117,8 @@ class User(AbstractUser):
             role = "Lecturer"
         elif self.is_parent:
             role = "Parent"
+        else:
+            role = "Unknown Role"  
 
         return role
 
@@ -160,7 +162,6 @@ class StudentManager(models.Manager):
 
 class Student(models.Model):
     student = models.OneToOneField(User, on_delete=models.CASCADE)
-    # id_number = models.CharField(max_length=20, unique=True, blank=True)
     level = models.CharField(max_length=25, choices=LEVEL, null=True)
     program = models.ForeignKey(Program, on_delete=models.CASCADE, null=True)
 

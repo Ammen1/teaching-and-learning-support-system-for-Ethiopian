@@ -1,6 +1,5 @@
 from rest_framework import generics
 from rest_framework.response import Response
-from .models import User, Parent
 from rest_framework import status
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
@@ -9,7 +8,10 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from rest_framework import serializers, status
 from course.models import Program
-from .serializers import StaffAddSerializer, StudentAddSerializer, ProfileUpdateSerializer, EmailValidationOnForgotPasswordSerializer, ParentAddSerializer
+from . models import *
+from django.utils import timezone
+
+from .serializers import *
 from django.db import transaction
 
 from rest_framework.views import APIView
@@ -171,3 +173,41 @@ class ParentAddView(generics.CreateAPIView):
         }
 
         return Response(response_data, status=status.HTTP_201_CREATED)
+
+
+class DashboardAPI(APIView):
+    def get(self, request, *args, **kwargs):
+        all_users = User.objects.all()
+        student_count = Student.objects.count()
+        instructor_count = DepartmentHead.objects.count()
+        parent_count = Parent.objects.count()
+        admin_count = User.objects.filter(is_superuser=True).count()
+        current_month_users = User.objects.filter(date_joined__month=timezone.now().month).count()
+        last_month_users = User.objects.filter(date_joined__month=timezone.now().month - 1).count()
+        recent_users = User.objects.order_by('-date_joined')[:5]
+
+        user_serializer = UserSerializer(all_users, many=True)
+        student_serializer = StudentSerializer(student_count, many=True)
+        instructor_serializer = DepartmentHeadSerializer(instructor_count, many=False)
+        parent_serializer = ParentSerializer(parent_count, many=False)
+
+        data = {
+                'all_users': user_serializer.data,
+                'student_count': student_count,
+                'instructor_count': instructor_count,
+                'parent_count': parent_count,
+                'admin_count': admin_count,
+                'current_month_users': current_month_users,
+                'last_month_users': last_month_users,
+                'recent_users': recent_users,
+                }
+        return Response(data, status=status.HTTP_200_OK)
+    
+    
+    
+class UserListView(APIView):
+    def get(self, request, *args, **kwargs):
+        users = User.objects.all()
+        serializer = UserSerializer(users, many=True)
+        print(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)    
