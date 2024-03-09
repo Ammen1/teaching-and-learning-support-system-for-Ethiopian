@@ -33,9 +33,9 @@ const CourseCategory = () => {
       </div>
 
       <div className="mt-6 w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-  {courseData?.map((course, index) => (
-    <Link to={`/course/${course.id}`} key={index} className="card-link">
-      <Card className="bg-white rounded-sm border">
+        {courseData?.map((course, index) => (
+        <Link to={`/course/${course.id}`} key={index} className="card-link">
+        <Card className="bg-white rounded-sm border dark:bg-white dark:border-slate-100">
         <img
           src={course.image}
           alt="image"
