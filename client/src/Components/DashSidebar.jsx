@@ -100,31 +100,29 @@ export default function DashSidebar() {
                   as='div'
                 >
                   Courses
-             
                 </Sidebar.Item>
               </Link>
-              <Link to='/dashboard?tab=users'>
+              <Link to='/dashboard?tab=calendar'>
                 <Sidebar.Item
-                  active={tab === 'users'}
+                  active={tab === 'calendar'}
                   icon={HiCalendar}
                   as='div'
                 >
                   Calendar
-                
                 </Sidebar.Item>
               </Link>
-              <Link to='/dashboard?tab=users'>
+              <Link to='/dashboard?tab=progress'>
                 <Sidebar.Item
-                  active={tab === 'users'}
+                  active={tab === 'progress'}
                   icon={HiPresentationChartBar}
                   as='div'
                 >
-                  Progress Tracker
+                  Progress
                 </Sidebar.Item>
               </Link>
-              <Link to='/dashboard?tab=users'>
+              <Link to='/dashboard?tab=discussion'>
                 <Sidebar.Item
-                  active={tab === 'users'}
+                  active={tab === 'discussion'}
                   icon={HiOutlineUserGroup}
                   as='div'
                 >
@@ -132,9 +130,9 @@ export default function DashSidebar() {
  
                 </Sidebar.Item>
               </Link>
-              <Link to='/dashboard?tab=users'>
+              <Link to='/dashboard?tab=resources'>
                 <Sidebar.Item
-                  active={tab === 'users'}
+                  active={tab === 'resources'}
                   icon={HiOutlineCursorClick}
                   as='div'
                 >
@@ -142,18 +140,18 @@ export default function DashSidebar() {
  
                 </Sidebar.Item>
               </Link>
-              <Link to='/dashboard?tab=users'>
+              <Link to='/dashboard?tab=announcements'>
                 <Sidebar.Item
-                  active={tab === 'users'}
+                  active={tab === 'announcements'}
                   icon={HiOutlineUserGroup}
                   as='div'
                 >
                   Announcements   
                 </Sidebar.Item>
               </Link>
-              <Link to='/dashboard?tab=comments'>
+              <Link to='/dashboard?tab=feedback'>
                 <Sidebar.Item
-                  active={tab === 'comments'}
+                  active={tab === 'feedback'}
                   icon={ HiSupport}
                   as='div'
                 >
@@ -174,7 +172,7 @@ export default function DashSidebar() {
           <Sidebar.Item
             icon={HiArrowSmRight}
             className='cursor-pointer'
-            onClick={handleSignout}
+            // onClick={handleSignout}
           >
             Sign Out
           </Sidebar.Item>
