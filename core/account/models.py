@@ -95,6 +95,10 @@ class User(AbstractUser):
     @classmethod
     def get_student_count(cls):
         return cls.objects.filter(is_student=True).count()
+    
+    @classmethod
+    def get_totalusers(cls):
+        return cls.objects.filter(is_active=True).count()
 
     @classmethod
     def get_lecturer_count(cls):

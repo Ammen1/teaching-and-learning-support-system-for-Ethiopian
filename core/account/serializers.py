@@ -18,6 +18,7 @@ class UserSerializer(serializers.ModelSerializer):
     student_count = serializers.SerializerMethodField()
     lecturer_count = serializers.SerializerMethodField()
     superuser_count = serializers.SerializerMethodField()
+    totalusers = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -28,7 +29,10 @@ class UserSerializer(serializers.ModelSerializer):
         representation['user_role'] = instance.get_user_role
         representation['picture_url'] = instance.get_picture()
         return representation
-
+    
+    def get_totalusers(self, instance):
+        return instance.get_totalusers()
+    
     def get_student_count(self, instance):
         return instance.get_student_count()
 
