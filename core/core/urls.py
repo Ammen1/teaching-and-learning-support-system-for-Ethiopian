@@ -3,12 +3,19 @@ from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views import defaults as default_views
-
+from rest_framework.schemas import get_schema_view
+from rest_framework.documentation import include_docs_urls
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('admin/', admin.site.urls),
     path('api/account/', include('account.urls')),
     path('api/cores/', include('cores.urls')),
