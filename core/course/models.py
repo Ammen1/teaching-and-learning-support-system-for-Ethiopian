@@ -103,7 +103,7 @@ class Course(models.Model):
     summary = models.TextField(max_length=200, blank=True, null=True)
     program = models.ForeignKey(Program, on_delete=models.CASCADE)
     level = models.CharField(max_length=25, choices=LEVEL, null=True)
-    year = models.IntegerField(choices=YEARS, default=0)
+    year = models.IntegerField(choices=YEARS, default=0, blank=True, null=True)
     semester = models.CharField(choices=SEMESTER, max_length=200)
     is_elective = models.BooleanField(default=False, blank=True, null=True)
 
