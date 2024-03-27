@@ -284,7 +284,7 @@ class AssessmentResultAPIView(APIView):
 
 
 class ResultSheetPDFAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request, id):
         current_semester = Semester.objects.get(is_current_semester=True)
@@ -346,7 +346,7 @@ class ResultSheetPDFAPIView(APIView):
         normal.fontName = "Helvetica"
         normal.fontSize = 10
         normal.leading = 15
-        title = "<b>Course lecturer: " + request.user.get_full_name + "</b>"
+        title = "<b>Course lecturer: " + "</b>"
         title = Paragraph(title.upper(), normal)
         Story.append(title)
         Story.append(Spacer(1, 0.1 * inch))
