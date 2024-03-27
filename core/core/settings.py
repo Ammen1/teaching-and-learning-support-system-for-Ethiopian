@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -214,10 +215,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 from datetime import timedelta
 
 
-
-
-
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'mail.gooderash.com'
 EMAIL_PORT = 465
@@ -263,3 +260,45 @@ LOGGING = {
 
 STUDENT_ID_PREFIX =  "Ru/"
 LECTURER_ID_PREFIX =  "lec"
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Dashboard Admin",
+    "site_header": "TEACHING AND LEARNING SUPPORT",
+    "site_brand": "TEACHING AND LEARNING SUPPORT",
+    "site_logo": "img/log.png",
+    "welcome_sign": "Welcome to TEACHING AND LEARNING SUPPORT",
+    "copyright": "TEACHING AND LEARNING SUPPORT",
+    "topmenu_links": [
+        {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"model": "auth.User"},
+        {"app": "course"},
+        {"app": "account"},
+         {"app": "cores"},
+    ],
+    "usermenu_links": [
+        {"name": "Support", "url": "https://github.com/Ammen1", "new_window": True},
+    ],
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "hide_apps": ["Group"],
+    "hide_models": ["Group"],
+    "order_with_respect_to": ["cores", "Course", "Quiz.author", "Users"],
+    "custom_links": {
+        "books": [
+            {"name": "Make Messages", "url": "make_messages", "icon": "fas fa-comments", "permissions": ["books.view_book"]}
+        ]
+    },
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user-graduate",
+        "auth.Group": "fas fa-users",
+    },
+    "default_icon_parents": "fas fa-chevron-circle-right",
+    "default_icon_children": "fas fa-circle",
+    "related_modal_active": False,
+    "changeform_format": "horizontal_tabs",
+    "changeform_format_overrides": {"auth.user": "collapsible", "auth.group": "vertical_tabs"},
+    "language_chooser": False,
+   
+}
+
