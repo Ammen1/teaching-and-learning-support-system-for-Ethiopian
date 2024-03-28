@@ -1,18 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Button, Navbar as FlowBiteNavbar, TextInput, Dropdown, Avatar } from 'flowbite-react';
+import { Button, Navbar as FlowBiteNavbar, TextInput } from 'flowbite-react';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { Link, useLocation } from 'react-router-dom';
-import { IoIosArrowDown } from "react-icons/io";
-import { FaSun, FaMoon } from 'react-icons/fa';
-import { toggleTheme } from '../redux/theme/themeSlice';
-import { useSelector, useDispatch } from 'react-redux';
 
 const Navbar = () => {
   const [scrolling, setScrolling] = useState(false);
   const path = useLocation().pathname;
-  const dispatch = useDispatch();
-  const { currentUser } = useSelector((state) => state.user);
-  const { theme } = useSelector((state) => state.theme);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,36 +19,35 @@ const Navbar = () => {
     };
   }, []);
 
-  const handleSignout = () => {
-    // Implement signout logic here
-  };
-
   return (
-    <FlowBiteNavbar
-      className={`${
-        scrolling ? "scrolled" : ""
-      } border-b-2 p-2  sm:block hidden dark:bg-white `}
-    >
-      <div className="flex items-center mr-16">
-        <Link
-          to='/'
-          className='self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white'
-        >
-          <img src="Company/R.png" alt="logo" className="w-[150px] px-2 py-1 bg-gradient-to-r from-indigo-500 rounded-lg" />
-        </Link>
-        <form className=" ml-56">
-          <TextInput
-            type='text'
-            placeholder='Search...'
-            rightIcon={AiOutlineSearch}
-            className='hidden lg:inline'
-          />
-        </form>
+    <nav className="border-b-2 bg-gray-800 w-full">
+      <div className="px-8 py-4 md:px-16 flex items-center justify-between">
+        <div className="flex items-center space-x-8">
+          <Link
+            to='/'
+            className='self-center text-xl font-semibold text-indigo-500 dark:text-white'
+          >
+            <img src="Company/R.png" alt="logo" className="w-24 " />
+          </Link>
+          <div className="flex gap-4">
+            <Link to='/home' className='text-gray-800 dark:text-white hover:text-indigo-500 hover:underline'>Home</Link> {/* Added hover color */}
+            <Link to='/sign-in' className='text-gray-800 dark:text-white hover:text-indigo-500 hover:underline'>Signin</Link> {/* Added hover color */}
+            <Link to='/about' className='text-gray-800 dark:text-white hover:text-indigo-500 hover:underline'>About</Link> {/* Added hover color */}
+          </div>
+        </div>
         <Button className='w-12 h-10 lg:hidden' color='gray' pill>
           <AiOutlineSearch />
         </Button>
+        <div className="px-8 flex items-center justify-end"> {/* Adjusted position to end */}
+          <Link
+            to='/'
+            className='self-center text-xl font-semibold text-indigo-500 dark:text-white'
+          >
+            <img src="Company/R.png" alt="logo" className="w-24 " />
+          </Link>
+        </div>
       </div>
-    </FlowBiteNavbar>
+    </nav>
   );
 };
 
