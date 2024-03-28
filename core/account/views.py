@@ -10,13 +10,9 @@ from rest_framework import serializers, status
 from course.models import Program
 from . models import *
 from django.utils import timezone
-
 from .serializers import *
 from django.db import transaction
-
 from rest_framework.views import APIView
-
-
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import UserLoginSerializer
@@ -48,8 +44,15 @@ class MyTokenObtainPairView(TokenObtainPairView):
             'user_role': user.get_user_role,  # Custom method to get user role
         }
         return Response(response_data)
+    
 
-
+class SignUpView(APIView):
+    def post(self, request):
+        serializer = UserSerializers(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserLoginView(APIView):
     def post(self, request, *args, **kwargs):
