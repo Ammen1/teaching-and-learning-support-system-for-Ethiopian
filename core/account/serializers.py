@@ -14,6 +14,19 @@ from .models import DepartmentHead
 
 User = get_user_model()
 
+
+class UserSerializers(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        return user
+
+    class Meta:
+        model = User
+        fields = ('username', 'password', 'email', 'first_name', 'last_name', 'is_student', 'is_lecturer', 'is_parent', 'is_dep_head', 'gender', 'phone', 'address', 'picture')
+
+
 class UserSerializer(serializers.ModelSerializer):
     student_count = serializers.SerializerMethodField()
     lecturer_count = serializers.SerializerMethodField()
@@ -201,17 +214,12 @@ class EmailValidationOnForgotPasswordSerializer(serializers.Serializer):
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = default_token_generator.make_token(user)
 
-        # Save the token to the user model
         user.password_reset_token = token
         user.save()
 
-        # Define your frontend URL here or retrieve it dynamically
-        frontend_url = "http://127.0.0.1:8000/api/forgot-password/"  # Replace with your actual frontend URL
+        frontend_url = "http://127.0.0.1:8000/api/forgot-password/"  
 
-        # Create a reset link with the token
         reset_link = f"{frontend_url}/reset-password/{uid}/{token}/"
-
-        # Send an email with the reset link
         send_mail(
             "Password Reset",
             f"Click the following link to reset your password: {reset_link}",
