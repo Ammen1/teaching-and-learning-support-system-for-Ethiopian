@@ -4,9 +4,9 @@ import Footer from "./Components/Footer";
 import SignIn from './pages/SignIn';
 import ScrollToTop from './Components/ScrollToTop';
 import Dashboard from './pages/Dashboard';
-import DashHome from './Components/DashHome';
 import DashUsers from './Components/DashUsers';
 import PrivateRoute from "./Components/PrivateRoute"
+import Navbar from './Components/Navbar';
 
 
 
@@ -14,7 +14,8 @@ import PrivateRoute from "./Components/PrivateRoute"
 export default function App() {
   return (
     <BrowserRouter>
-      <ScrollToTop />
+      {/* <ScrollToTop /> */}
+      <Navbar />
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/sign-in' element={<SignIn />} />
