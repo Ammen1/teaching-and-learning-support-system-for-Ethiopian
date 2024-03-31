@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.1",
+    "axion": "^0.1.0",
+    "axios": "^1.6.8",
     "flowbite-react": "^0.7.2",
     "lottie-react": "^2.4.0",
     "moment": "^2.30.1",
