@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'cores',
     'reult',
     'quiz',
+    'chapa',
     
     'rest_framework',
     'corsheaders',
@@ -282,7 +283,7 @@ JAZZMIN_SETTINGS = {
     "navigation_expanded": True,
     "hide_apps": ["Group"],
     "hide_models": ["Group"],
-    "order_with_respect_to": ["cores", "Course", "Quiz.author", "Users"],
+    "order_with_respect_to": [ "Course", "Quiz.author","Quiz", "cores", "Users",  "Reult"],
     "custom_links": {
         "books": [
             {"name": "Make Messages", "url": "make_messages", "icon": "fas fa-comments", "permissions": ["books.view_book"]}
@@ -302,3 +303,9 @@ JAZZMIN_SETTINGS = {
    
 }
 
+
+CHAPA_SECRET = os.environ.get('CHASECK_TEST-WLA5A4peABCYzMIKSaze3aYnfRBlpWDk')
+CHAPA_API_URL = os.environ.get('CHAPA_API_URL', 'https://api.chapa.co')
+CHAPA_WEBHOOK_URL = os.environ.get('CHAPA_WEBHOOK_URL')
+CHAPA_API_VERSION = os.environ.get('CHAPA_API_VERSION', 'v1')
+CHAPA_TRANSACTION_MODEL = 'chapa.ChapaTransaction'
