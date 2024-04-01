@@ -69,10 +69,42 @@ class ProgramDeleteView(DestroyAPIView):
 # Course views
 # #####################
 
+from rest_framework import generics
+from rest_framework.response import Response
+from .models import Course, Upload, UploadVideo, CourseAllocation
+from .serializers import CourseSerializer, UploadFormFileSerializer, UploadFormVideoSerializer
+
+class CourseAPIView(generics.ListAPIView):
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer
+    # lookup_field = 'slug'
+
+    def retrieve(self, request, *args, **kwargs):
+        course = self.get_object()
+        files = Upload.objects.filter(course=course)
+        videos = UploadVideo.objects.filter(course=course)
+        lecturers = CourseAllocation.objects.filter(courses=course)
+
+        # Serialize the data
+        course_serializer = self.serializer_class(course)
+        files_serializer = UploadFormFileSerializer(files, many=True)
+        videos_serializer = UploadFormVideoSerializer(videos, many=True)
+
+        # Create the response data
+        response_data = {
+            "course": course_serializer.data,
+            "files": files_serializer.data,
+            "videos": videos_serializer.data,
+            "lecturers": lecturers.values(),  # Convert QuerySet to a list
+        }
+
+        return Response(response_data)
+
+
 class CourseSingleAPIView(generics.RetrieveAPIView):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     lookup_field = 'slug'
 
     def retrieve(self, request, *args, **kwargs):
@@ -124,9 +156,6 @@ class CourseDeleteAPIView(generics.DestroyAPIView):
         title = instance.title  
         self.perform_destroy(instance)
         return Response({"detail": f"Course {title} has been deleted."}, status=status.HTTP_204_NO_CONTENT)
-
-
-
 
 
 class CourseAllocationAPIView(generics.ListAPIView):
@@ -303,7 +332,7 @@ class CourseDropView(APIView):
 
 
 class UserCourseListView(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         if request.user.is_lecturer:
@@ -336,7 +365,7 @@ from django.contrib import messages
 
 
 class FileUploadAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def post(self, request, slug):
         course = get_object_or_404(Course, slug=slug)
@@ -431,7 +460,7 @@ class VideoSingleAPIView(APIView):
 
     def get(self, request, slug, video_slug):
         video = self.get_object(slug, video_slug)
-        serializer = UploadVideoSerializer(video)  # Adjust serializer as needed
+        serializer = UploadFormVideoSerializer(video)  # Adjust serializer as needed
         return Response(serializer.data)        
     
     
