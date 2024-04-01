@@ -5,8 +5,6 @@ from django.core.validators import FileExtensionValidator
 from django.db.models.signals import pre_save, post_save, post_delete
 from django.db.models import Q
 from django.dispatch import receiver
-
-# project import
 from .utils import *
 from cores.models import ActivityLog
 
@@ -97,6 +95,12 @@ class CourseManager(models.Manager):
 
 class Course(models.Model):
     slug = models.SlugField(blank=True, unique=True)
+    lecturer = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="courses_taught",
+        default=1,
+    )
     title = models.CharField(max_length=200, null=True)
     code = models.CharField(max_length=200, unique=True, null=True)
     credit = models.IntegerField(null=True, default=0)
@@ -106,6 +110,10 @@ class Course(models.Model):
     year = models.IntegerField(choices=YEARS, default=0, blank=True, null=True)
     semester = models.CharField(choices=SEMESTER, max_length=200)
     is_elective = models.BooleanField(default=False, blank=True, null=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    finished = models.DateTimeField(null=True, blank=True)
+    views = models.PositiveIntegerField(default=0)
+    # status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
 
     objects = CourseManager()
 
@@ -144,7 +152,6 @@ def log_save(sender, instance, created, **kwargs):
 @receiver(post_delete, sender=Course)
 def log_delete(sender, instance, **kwargs):
     ActivityLog.objects.create(message=f"The course '{instance}' has been deleted.")
-
 
 class CourseAllocation(models.Model):
     lecturer = models.ForeignKey(
@@ -189,6 +196,7 @@ class Upload(models.Model):
     )
     updated_date = models.DateTimeField(auto_now=True, auto_now_add=False, null=True)
     upload_time = models.DateTimeField(auto_now=False, auto_now_add=True, null=True)
+    flag = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.file)[6:]
@@ -245,6 +253,7 @@ class UploadVideo(models.Model):
     )
     summary = models.TextField(null=True, blank=True)
     timestamp = models.DateTimeField(auto_now=False, auto_now_add=True, null=True)
+    flag = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.title)
