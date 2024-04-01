@@ -2,12 +2,12 @@ import heroAnimation from '../animation/Animation 1.json';
 import Lottie from "lottie-react";
 const CourseOutlet = () => {
   return (
-    <section className="w-full max-w-[1600px] mx-auto px-6 flex items-center gap-8 justify-between my-6 md:my-16 flex-col md:flex-row">
+    <section className="w-full max-w-[1100px] mx-auto px-6 flex items-center gap-8 justify-between my-6 md:my-16 flex-col md:flex-row">
       <Lottie
         animationData={heroAnimation}
         loop
         autoplay
-        style={{ width: '100%', maxWidth: '600px' }}
+        style={{ width: '80%', maxWidth: '500px' }}
       />
       <div className="w-full md:w-[40%]">
         <h3 className="text-[20px] md:text-[30px] font-[700] text-textColor">
@@ -19,7 +19,7 @@ const CourseOutlet = () => {
           house!
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 my-8 ">
+        <div className="grid grid-cols-1 text-black md:grid-cols-2 gap-4 md:gap-6 my-8 ">
           <p className="flex items-center gap-3 ">
             <img src="/rightIcon.png" alt="icon" className="w-[20px]" />
             Online Resources

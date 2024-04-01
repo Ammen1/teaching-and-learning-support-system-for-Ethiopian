@@ -3,6 +3,7 @@ from .views import *
 from .views import UserLoginView, MyTokenObtainPairView
 
 urlpatterns = [
+    path('signup/', SignUpView.as_view(), name='signup'),
     path('login/', UserLoginView.as_view(), name='login'),
     path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('staff/add/', StaffAddView.as_view(), name='staff-add'),
