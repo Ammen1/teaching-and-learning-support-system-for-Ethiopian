@@ -8,6 +8,7 @@ urlpatterns = [
     path('program/<int:pk>/', ProgramDetailView.as_view(), name='program_edit'),
     path('program/<int:pk>/edit/', ProgramEditView.as_view(), name='program_edit_api'),
     path('program/delete/<int:pk>/', ProgramDeleteView.as_view(), name='program_delete_api'),
+    path('courses/', CourseAPIView.as_view(), name='course-list'),
     path('course/single/<slug:slug>/', CourseSingleAPIView.as_view(), name='course_single_api'),
     path('course/add/', CourseAddAPIView.as_view(), name='course_add_api'),
     path('course/edit/<slug:slug>/', CourseEditAPIView.as_view(), name='course_edit_api'),
