@@ -9,6 +9,7 @@ import PrivateRoute from "./Components/PrivateRoute"
 import Navbar from './Components/Navbar';
 import SignUp from './pages/SignUp';
 import SingleCoursePage from './Components/CoureseSingle';
+import CourseCategory from './Components/CourseCategory';
 
 
 
@@ -19,6 +20,7 @@ export default function App() {
       <Navbar />
       <Routes>
         <Route path='/' element={<Home />} />
+        <Route path='/courses' element={<CourseCategory />} />
         <Route path='/course/:slug' element={<SingleCoursePage />} />
         <Route path='/sign-in' element={<SignIn />} />
         <Route path='/sign-up' element={<SignUp />} />
