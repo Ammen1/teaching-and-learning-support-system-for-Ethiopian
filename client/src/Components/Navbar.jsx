@@ -30,9 +30,10 @@ const Navbar = () => {
             <img src="Company/R.png" alt="logo" className="w-24 " />
           </Link>
           <div className="flex gap-4">
-            <Link to='/home' className='text-gray-800 dark:text-white hover:text-indigo-500 hover:underline'>Home</Link> {/* Added hover color */}
-            <Link to='/sign-in' className='text-gray-800 dark:text-white hover:text-indigo-500 hover:underline'>Signin</Link> {/* Added hover color */}
-            <Link to='/about' className='text-gray-800 dark:text-white hover:text-indigo-500 hover:underline'>About</Link> {/* Added hover color */}
+            <Link to='/home' className='text-gray-800 dark:text-white hover:text-indigo-500 hover:underline'>Home</Link> 
+            <Link to='/sign-in' className='text-gray-800 dark:text-white hover:text-indigo-500 hover:underline'>Signin</Link> 
+            <Link to='/about' className='text-gray-800 dark:text-white hover:text-indigo-500 hover:underline'>About</Link> 
+            <Link to='/courses' className='text-gray-800 dark:text-white hover:text-indigo-500 hover:underline'>Coures</Link> 
           </div>
         </div>
         <Button className='w-12 h-10 lg:hidden' color='gray' pill>
