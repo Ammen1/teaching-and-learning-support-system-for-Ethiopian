@@ -133,8 +133,8 @@ class User(AbstractUser):
             no_picture = settings.MEDIA_URL + "default.png"
             return no_picture
 
-    def get_absolute_url(self):
-        return reverse("profile_single", kwargs={"id": self.id})
+    # def get_absolute_url(self):
+    #     return reverse("profile_single", kwargs={"id": self.id})
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -163,13 +163,14 @@ class StudentManager(models.Manager):
             ).distinct()  
         return qs
 
-
 class Student(models.Model):
-    student = models.OneToOneField(User, on_delete=models.CASCADE)
+    student = models.OneToOneField(User, null=True, on_delete=models.SET_NULL)
     level = models.CharField(max_length=25, choices=LEVEL, null=True)
     program = models.ForeignKey(Program, on_delete=models.CASCADE, null=True)
 
     objects = StudentManager()
+
+
 
     class Meta:
         ordering = ("-student__date_joined",)
@@ -183,9 +184,6 @@ class Student(models.Model):
         females_count = Student.objects.filter(student__gender="F").count()
 
         return {"M": males_count, "F": females_count}
-
-    def get_absolute_url(self):
-        return reverse("profile_single", kwargs={"id": self.id})
 
     def delete(self, *args, **kwargs):
         self.student.delete()

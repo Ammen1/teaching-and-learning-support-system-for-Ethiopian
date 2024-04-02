@@ -15,11 +15,9 @@ const App = () => {
   return (
     <div className=" dark:bg-white"> 
       <MobileNav />
-      <div className=""><Hero /></div>
-
+      <Hero />
       <CourseOutlet />
       <Status />
-      <CourseCategory />
       <JoinCommunity />
       <Review />
       <Support />
