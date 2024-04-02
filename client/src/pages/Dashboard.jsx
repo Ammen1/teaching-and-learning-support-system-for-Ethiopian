@@ -6,8 +6,9 @@ import DashUsers from '../Components/DashUsers';
 import DashComments from '../Components/DashComments';
 import DashboardComp from '../Components/DashboardComp';
 import Courses from './Courses';
-import DashHome from '../Components/DashHome';
+
 import Resources from '../Components/Resources';
+import DashboardSidebar from '../Components/DashSidebar';
 
 export default function Dashboard() {
   const location = useLocation();
@@ -22,7 +23,7 @@ export default function Dashboard() {
   return (
     <div className='min-h-screen flex flex-col md:flex-row  '>
       <div className='md:w-56'>
-        <DashHome />
+        <DashboardSidebar />
       </div>
    
       {tab === 'profile' && <DashProfile />}

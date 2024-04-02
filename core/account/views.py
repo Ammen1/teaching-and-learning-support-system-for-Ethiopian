@@ -46,13 +46,22 @@ class MyTokenObtainPairView(TokenObtainPairView):
         return Response(response_data)
     
 
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from .serializers import UserSerializers
+
 class SignUpView(APIView):
     def post(self, request):
+        # Modify request data to set is_student to True
+        request.data['is_student'] = True
+
         serializer = UserSerializers(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class UserLoginView(APIView):
     def post(self, request, *args, **kwargs):
@@ -65,8 +74,30 @@ class UserLoginView(APIView):
         return Response({"access_token": access_token}, status=status.HTTP_200_OK)
 
 
-class MyTokenObtainPairView(TokenObtainPairView):
-    serializer_class = MyTokenObtainPairSerializer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Add custom claims
+        token['username'] = user.username
+        token['user_role'] = user.get_user_role  
+
+        return token
+
+    def validate(self, attrs):
+        data = super().validate(attrs)
+
+        # Add custom fields to the response data
+        data['username'] = self.user.username
+        data['email'] = self.user.email
+        data['user_role'] = self.user.get_user_role
+
+        return data
+
 
 
 
