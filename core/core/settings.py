@@ -304,8 +304,8 @@ JAZZMIN_SETTINGS = {
 }
 
 
-CHAPA_SECRET = os.environ.get('CHASECK_TEST-WLA5A4peABCYzMIKSaze3aYnfRBlpWDk')
-CHAPA_API_URL = os.environ.get('CHAPA_API_URL', 'https://api.chapa.co')
-CHAPA_WEBHOOK_URL = os.environ.get('CHAPA_WEBHOOK_URL')
-CHAPA_API_VERSION = os.environ.get('CHAPA_API_VERSION', 'v1')
-CHAPA_TRANSACTION_MODEL = 'chapa.ChapaTransaction'
+CHAPA_SECRET = 'CHASECK_TEST-WLA5A4peABCYzMIKSaze3aYnfRBlpWDk',
+CHAPA_API_URL = 'CHAPA_API_URL', 'https://api.chapa.co',
+CHAPA_WEBHOOK_URL = 'CHAPA_WEBHOOK_URL',
+CHAPA_API_VERSION = 'CHAPA_API_VERSION', 'v1',
+CHAPA_TRANSACTION_MODEL = 'chapa.ChapaTransaction',

@@ -17,17 +17,15 @@ YEARS = (
     (4, "6"),
 )
 
-# LEVEL_COURSE = "Level course"
 PRIMARY = "Primary"
 HIGHT_SCHOOL = "Hight_School"
-BACHLOAR_DEGREE = "Bachloar"
+BACHELOR_DEGREE = "Bachelor"
 MASTER_DEGREE = "Master"
 
 LEVEL = (
-    # (LEVEL_COURSE, "Level course"),
-    (PRIMARY,  "Primary"),
-    (HIGHT_SCHOOL, "Hight_School"),
-    (BACHLOAR_DEGREE, "Bachloar Degree"),
+    (PRIMARY, "Primary"),
+    (HIGHT_SCHOOL, "High School"),
+    (BACHELOR_DEGREE, "Bachelor Degree"),
     (MASTER_DEGREE, "Master Degree"),
 )
 
@@ -41,7 +39,6 @@ SEMESTER = (
     (THIRD, "Third"),
 )
 
-
 class ProgramManager(models.Manager):
     def search(self, query=None):
         queryset = self.get_queryset()
@@ -49,9 +46,8 @@ class ProgramManager(models.Manager):
             or_lookup = Q(title__icontains=query) | Q(summary__icontains=query)
             queryset = queryset.filter(
                 or_lookup
-            ).distinct()  # distinct() is often necessary with Q lookups
+            ).distinct()
         return queryset
-
 
 class Program(models.Model):
     title = models.CharField(max_length=150, unique=True)
@@ -65,17 +61,14 @@ class Program(models.Model):
     def get_absolute_url(self):
         return reverse("program_detail", kwargs={"pk": self.pk})
 
-
 @receiver(post_save, sender=Program)
 def log_save(sender, instance, created, **kwargs):
     verb = "created" if created else "updated"
     ActivityLog.objects.create(message=f"The program '{instance}' has been {verb}.")
 
-
 @receiver(post_delete, sender=Program)
 def log_delete(sender, instance, **kwargs):
     ActivityLog.objects.create(message=f"The program '{instance}' has been deleted.")
-
 
 class CourseManager(models.Manager):
     def search(self, query=None):
@@ -89,10 +82,9 @@ class CourseManager(models.Manager):
             )
             queryset = queryset.filter(
                 or_lookup
-            ).distinct()  # distinct() is often necessary with Q lookups
+            ).distinct()
         return queryset
-
-
+    
 class Course(models.Model):
     slug = models.SlugField(blank=True, unique=True)
     lecturer = models.ForeignKey(
@@ -113,7 +105,6 @@ class Course(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     finished = models.DateTimeField(null=True, blank=True)
     views = models.PositiveIntegerField(default=0)
-    # status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
 
     objects = CourseManager()
 
@@ -134,24 +125,10 @@ class Course(models.Model):
         else:
             return False
 
-
-def course_pre_save_receiver(sender, instance, *args, **kwargs):
-    if not instance.slug:
-        instance.slug = unique_slug_generator(instance)
-
-
-pre_save.connect(course_pre_save_receiver, sender=Course)
-
-
-@receiver(post_save, sender=Course)
-def log_save(sender, instance, created, **kwargs):
-    verb = "created" if created else "updated"
-    ActivityLog.objects.create(message=f"The course '{instance}' has been {verb}.")
-
-
-@receiver(post_delete, sender=Course)
-def log_delete(sender, instance, **kwargs):
-    ActivityLog.objects.create(message=f"The course '{instance}' has been deleted.")
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = unique_slug_generator(self)
+        super().save(*args, **kwargs)
 
 class CourseAllocation(models.Model):
     lecturer = models.ForeignKey(
@@ -170,7 +147,123 @@ class CourseAllocation(models.Model):
     def get_absolute_url(self):
         return reverse("edit_allocated_course", kwargs={"pk": self.pk})
 
+class Upload(models.Model):
+    title = models.CharField(max_length=100)
+    file = models.FileField(
+        upload_to="course_files/",
+        help_text="Valid Files: pdf, docx, doc, xls, xlsx, ppt, pptx, zip, rar, 7zip",
+        validators=[
+            FileExtensionValidator(
+                [
+                    "pdf",
+                    "docx",
+                    "doc",
+                    "xls",
+                    "xlsx",
+                    "ppt",
+                    "pptx",
+                    "zip",
+                    "rar",
+                    "7zip",
+                ]
+            )
+        ],
+    )
+    updated_date = models.DateTimeField(auto_now=True, auto_now_add=False, null=True)
+    upload_time = models.DateTimeField(auto_now=False, auto_now_add=True, null=True)
+    flag = models.BooleanField(default=False)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE) 
 
+    def __str__(self):
+        return str(self.file)[6:]
+
+    def get_extension_short(self):
+        ext = str(self.file).split(".")
+        ext = ext[len(ext) - 1]
+
+        if ext in ("doc", "docx"):
+            return "word"
+        elif ext == "pdf":
+            return "pdf"
+        elif ext in ("xls", "xlsx"):
+            return "excel"
+        elif ext in ("ppt", "pptx"):
+            return "powerpoint"
+        elif ext in ("zip", "rar", "7zip"):
+            return "archive"
+
+    def delete(self, *args, **kwargs):
+        self.file.delete()
+        super().delete(*args, **kwargs)
+
+@receiver(post_save, sender=Upload)
+def log_save(sender, instance, created, **kwargs):
+    if created:
+        ActivityLog.objects.create(
+            message=f"The file '{instance.title}' has been uploaded to the course '{instance.course}'."
+        )
+    else:
+        ActivityLog.objects.create(
+            message=f"The file '{instance.title}' of the course '{instance.course}' has been updated."
+        )
+
+
+@receiver(post_delete, sender=Upload)
+def log_delete(sender, instance, **kwargs):
+    ActivityLog.objects.create(
+        message=f"The file '{instance.title}' of the course '{instance.courses.first()}' has been deleted."
+    )
+
+class UploadVideo(models.Model):
+    title = models.CharField(max_length=100)
+    slug = models.SlugField(blank=True, unique=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    video = models.FileField(
+        upload_to="course_videos/",
+        help_text="Valid video formats: mp4, mkv, wmv, 3gp, f4v, avi, mp3",
+        validators=[
+            FileExtensionValidator(["mp4", "mkv", "wmv", "3gp", "f4v", "avi", "mp3"])
+        ],
+    )
+    summary = models.TextField(null=True, blank=True)
+    timestamp = models.DateTimeField(auto_now=False, auto_now_add=True, null=True)
+    flag = models.BooleanField(default=False)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE) 
+
+    def __str__(self):
+        return str(self.title)
+
+    def get_absolute_url(self):
+        return reverse(
+            "video_single", kwargs={"slug": self.course.slug, "video_slug": self.slug}
+        )
+
+    def delete(self, *args, **kwargs):
+        self.video.delete()
+        super().delete(*args, **kwargs)
+
+def video_pre_save_receiver(sender, instance, *args, **kwargs):
+    if not instance.slug:
+        instance.slug = unique_slug_generator(instance)
+
+pre_save.connect(video_pre_save_receiver, sender=UploadVideo)
+
+@receiver(post_save, sender=UploadVideo)
+def log_save(sender, instance, created, **kwargs):
+    if created:
+        ActivityLog.objects.create(
+            message=f"The video '{instance.title}' has been uploaded to the course {instance.course}."
+        )
+    else:
+        ActivityLog.objects.create(
+            message=f"The video '{instance.title}' of the course '{instance.course}' has been updated."
+        )
+
+@receiver(post_delete, sender=UploadVideo)
+def log_delete(sender, instance, **kwargs):
+    ActivityLog.objects.create(
+        message=f"The video '{instance.title}' of the course '{instance.course}' has been deleted."
+    )
 class Upload(models.Model):
     title = models.CharField(max_length=100)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
@@ -196,7 +289,7 @@ class Upload(models.Model):
     )
     updated_date = models.DateTimeField(auto_now=True, auto_now_add=False, null=True)
     upload_time = models.DateTimeField(auto_now=False, auto_now_add=True, null=True)
-    flag = models.BooleanField(default=False)
+    flag = models.BooleanField(default=False)  # Flag for Upload model
 
     def __str__(self):
         return str(self.file)[6:]
@@ -253,7 +346,7 @@ class UploadVideo(models.Model):
     )
     summary = models.TextField(null=True, blank=True)
     timestamp = models.DateTimeField(auto_now=False, auto_now_add=True, null=True)
-    flag = models.BooleanField(default=False)
+    flag = models.BooleanField(default=False)  # Flag for UploadVideo model
 
     def __str__(self):
         return str(self.title)
@@ -275,29 +368,7 @@ def video_pre_save_receiver(sender, instance, *args, **kwargs):
 
 pre_save.connect(video_pre_save_receiver, sender=UploadVideo)
 
-
-@receiver(post_save, sender=UploadVideo)
-def log_save(sender, instance, created, **kwargs):
-    if created:
-        ActivityLog.objects.create(
-            message=f"The video '{instance.title}' has been uploaded to the course {instance.course}."
-        )
-    else:
-        ActivityLog.objects.create(
-            message=f"The video '{instance.title}' of the course '{instance.course}' has been updated."
-        )
-
-
-@receiver(post_delete, sender=UploadVideo)
-def log_delete(sender, instance, **kwargs):
-    ActivityLog.objects.create(
-        message=f"The video '{instance.title}' of the course '{instance.course}' has been deleted."
-    )
-
-
 class CourseOffer(models.Model):
-    """NOTE: Only department head can offer semester courses"""
-
     dep_head = models.ForeignKey("account.DepartmentHead", on_delete=models.CASCADE)
 
     def __str__(self):
