@@ -1,28 +1,17 @@
-import { Sidebar } from 'flowbite-react';
-import {
-  HiUser,
-  HiArrowSmRight,
-  HiDocumentText,
-  HiOutlineUserGroup,
-  HiAnnotation,
-  HiChartPie,
-  HiCalendar,
-  HiOutlineCursorClick,
-  HiCloudDownload,
-  HiSupport,
-  HiPresentationChartBar,
-} from 'react-icons/hi';
-import { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { signoutSuccess } from '../redux/user/userSlice';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
+import { HiUser, HiArrowSmRight, HiDocumentText, HiOutlineUserGroup, HiAnnotation, HiChartPie, HiBell, HiOutlineBadgeCheck, HiEmojiHappy, HiPlus } from 'react-icons/hi';
+import { MdAttachFile, MdKeyboardArrowDown, MdKeyboardArrowUp, MdOutlineKeyboardArrowRight, MdOutlineKeyboardArrowUp, MdOutlineKeyboardDoubleArrowDown } from 'react-icons/md';
+import { Sidebar } from 'flowbite-react';
 
-export default function DashSidebar() {
+const DashboardSidebar = () => {
   const location = useLocation();
   const dispatch = useDispatch();
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser } = useSelector(state => state.user);
   const [tab, setTab] = useState('');
+
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const tabFromUrl = urlParams.get('tab');
@@ -30,10 +19,11 @@ export default function DashSidebar() {
       setTab(tabFromUrl);
     }
   }, [location.search]);
+
   const handleSignout = async () => {
     try {
       const res = await fetch('/api/user/signout', {
-        method: 'POST',
+        method: 'POST'
       });
       const data = await res.json();
       if (!res.ok) {
@@ -45,134 +35,56 @@ export default function DashSidebar() {
       console.log(error.message);
     }
   };
+
+  const getLabelBasedOnRole = () => {
+    if (currentUser.is_superuser) {
+      return 'Admin';
+    } else if (currentUser.is_student) {
+      return 'Student';
+    } else if (currentUser.is_lecturer) {
+      return 'Lecturer';
+    } else if (currentUser.is_parent) {
+      return 'Parent';
+    } else {
+      return 'Unknown Role';
+    }
+  };
+
   return (
-    <Sidebar className='w-full md:w-56'>
+    <Sidebar className="w-full md:w-56">
       <Sidebar.Items>
-        <Sidebar.ItemGroup className='flex flex-col gap-1'>
-          {currentUser && (
-            <Link to='/dashboard?tab=dash'>
+        <Sidebar.ItemGroup className="flex flex-col gap-1">
+          {currentUser.user_role === 'Admin' && (
+            <Link to="/dashboard?tab=dash">
               <Sidebar.Item
                 active={tab === 'dash' || !tab}
                 icon={HiChartPie}
-                as='div'
+                as="div"
               >
                 Dashboard
               </Sidebar.Item>
             </Link>
           )}
-          <Link to='/dashboard?tab=profile'>
+          <Link to="/dashboard?tab=profile">
             <Sidebar.Item
               active={tab === 'profile'}
               icon={HiUser}
-              label={currentUser ? 'Admin' : 'User'}
-              labelColor='dark'
-              as='div'
+              label={getLabelBasedOnRole()}
+              labelColor="dark"
+              as="div"
             >
               Profile
             </Sidebar.Item>
           </Link>
-          {currentUser && (
-            <Link to='/dashboard?tab=posts'>
-              <Sidebar.Item
-                active={tab === 'posts'}
-                icon={HiDocumentText}
-                as='div'
-              >
-                Posts
-              </Sidebar.Item>
-            </Link>
-          )}
-          {currentUser && (
-            <>
-              <Link to='/dashboard?tab=users'>
-                <Sidebar.Item
-                  active={tab === 'users'}
-                  icon={HiOutlineUserGroup}
-                  as='div'
-                >
-                  Users
-                </Sidebar.Item>
-              </Link>
-              <Link to='/dashboard?tab=course'>
-                <Sidebar.Item
-                  active={tab === 'course'}
-                  icon={HiCloudDownload}
-                  as='div'
-                >
-                  Courses
-                </Sidebar.Item>
-              </Link>
-              <Link to='/dashboard?tab=calendar'>
-                <Sidebar.Item
-                  active={tab === 'calendar'}
-                  icon={HiCalendar}
-                  as='div'
-                >
-                  Calendar
-                </Sidebar.Item>
-              </Link>
-              <Link to='/dashboard?tab=progress'>
-                <Sidebar.Item
-                  active={tab === 'progress'}
-                  icon={HiPresentationChartBar}
-                  as='div'
-                >
-                  Progress
-                </Sidebar.Item>
-              </Link>
-              <Link to='/dashboard?tab=discussion'>
-                <Sidebar.Item
-                  active={tab === 'discussion'}
-                  icon={HiOutlineUserGroup}
-                  as='div'
-                >
-                  Discussion 
- 
-                </Sidebar.Item>
-              </Link>
-              <Link to='/dashboard?tab=resources'>
-                <Sidebar.Item
-                  active={tab === 'resources'}
-                  icon={HiOutlineCursorClick}
-                  as='div'
-                >
-                 Resources 
- 
-                </Sidebar.Item>
-              </Link>
-              <Link to='/dashboard?tab=announcements'>
-                <Sidebar.Item
-                  active={tab === 'announcements'}
-                  icon={HiOutlineUserGroup}
-                  as='div'
-                >
-                  Announcements   
-                </Sidebar.Item>
-              </Link>
-              <Link to='/dashboard?tab=feedback'>
-                <Sidebar.Item
-                  active={tab === 'feedback'}
-                  icon={ HiSupport}
-                  as='div'
-                >
-                Feedback 
-                </Sidebar.Item>
-              </Link>
-              <Link to='/dashboard?tab=comments'>
-                <Sidebar.Item
-                  active={tab === 'comments'}
-                  icon={HiAnnotation}
-                  as='div'
-                >
-                  Comments
-                </Sidebar.Item>
-              </Link>
-            </>
-          )}
+          {/* Add more sidebar items based on user roles */}
+          {/* Example: currentUser.is_student && (<Link ...></Link>) */}
+          {/* Example: currentUser.is_lecturer && (<Link ...></Link>) */}
+          {/* Example: currentUser.is_parent && (<Link ...></Link>) */}
+          {/* Example: currentUser.is_superuser && (<Link ...></Link>) */}
           <Sidebar.Item
             icon={HiArrowSmRight}
-            className='cursor-pointer'
-            // onClick={handleSignout}
+            className="cursor-pointer"
+            onClick={handleSignout}
           >
             Sign Out
           </Sidebar.Item>
@@ -180,4 +92,6 @@ export default function DashSidebar() {
       </Sidebar.Items>
     </Sidebar>
   );
-}
+};
+
+export default DashboardSidebar;
