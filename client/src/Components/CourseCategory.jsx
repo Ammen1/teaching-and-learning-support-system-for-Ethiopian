@@ -37,9 +37,10 @@ const CourseCategory = () => {
                 <div key={idx}>
                   {video.flag && (
                     <video controls className="w-full h-72 bg-cover object-cover mb-4">
-                      <source src={video.video} type="video/mp4" />
-                      Your browser does not support the video tag.
-                    </video>
+                    <source src={`http://127.0.0.1:8000${video.video}`} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                  
                   )}
                 </div>
               ))}
