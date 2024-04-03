@@ -10,6 +10,7 @@ import Navbar from './Components/Navbar';
 import SignUp from './pages/SignUp';
 import SingleCoursePage from './Components/CoureseSingle';
 import CourseCategory from './Components/CourseCategory';
+import PaymentSuccessPage from './Components/PaymentSuccessPag';
 
 
 
@@ -21,6 +22,7 @@ export default function App() {
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/courses' element={<CourseCategory />} />
+        <Route path='/course' element={<PaymentSuccessPage />} />
         <Route path='/course/:slug' element={<SingleCoursePage />} />
         <Route path='/sign-in' element={<SignIn />} />
         <Route path='/sign-up' element={<SignUp />} />
