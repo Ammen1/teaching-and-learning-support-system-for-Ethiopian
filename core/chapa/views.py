@@ -12,8 +12,10 @@ from rest_framework.decorators import api_view
 from django.shortcuts import get_object_or_404
 from .models import ChapaTransaction
 from .serializers import ChapaTransactionSerializer
+from .api import ChapaAPI
 
 logger = logging.getLogger(__name__)
+
 
 class InitiateChapaTransactionView(APIView):
     @csrf_exempt
@@ -53,8 +55,7 @@ class InitiateChapaTransactionView(APIView):
 @api_view(['POST'])
 def send_request(request):
     try:
-        data = request.data
-        
+        data = request.data   
         # Ensure all required fields are present
         required_fields = ['amount', 'currency', 'email', 'first_name', 'last_name']
         for field in required_fields:
@@ -68,7 +69,8 @@ def send_request(request):
             email=data['email'],
             first_name=data['first_name'],
             last_name=data['last_name'],
-            # Assuming other necessary fields are provided in the data
+
+        
         )
 
         # Send transaction request to Chapa API
@@ -92,19 +94,15 @@ def verify_payment(request, transaction_id):
     # Return the verification response to the client
     return Response(response)
 
+
 class ChapaWebhookView(APIView):
     def post(self, request):
         try:
             data = json.loads(request.body)
         except json.decoder.JSONDecodeError as e:
             logger.error(f"Error decoding JSON: {e}")
-            return Response({'error': "Invalid Json Body"}, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse({'error': "Invalid Json Body"}, status=status.HTTP_400_BAD_REQUEST)
 
-        headers = {
-            'Authorization': 'Bearer CHASECK_TEST-WLA5A4peABCYzMIKSaze3aYnfRBlpWDk',
-            'Content-Type': 'application/json'
-        }
-        
         model_class = apps.get_model(app_label='chapa', model_name='ChapaTransaction')
         
         try:
@@ -112,6 +110,7 @@ class ChapaWebhookView(APIView):
             transaction_instance.status = data.get('status')
             transaction_instance.response_dump = data
             transaction_instance.save()
-            return Response({'message': "Transaction updated successfully"})
+            print(transaction_instance)
+            return JsonResponse({'message': "Transaction updated successfully"})
         except model_class.DoesNotExist:
-            return Response({'error': "Invalid Transaction"}, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse({'error': "Invalid Transaction"}, status=status.HTTP_400_BAD_REQUEST)
