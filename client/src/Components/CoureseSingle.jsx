@@ -10,6 +10,7 @@ const SingleCoursePage = () => {
   const [course, setCourse] = useState(null);
   const [paymentComplete, setPaymentComplete] = useState(false);
   const [checkoutUrl, setCheckoutUrl] = useState('');
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -27,22 +28,23 @@ const SingleCoursePage = () => {
 
   const handlePayment = async () => {
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/chapa/initiate-chapa-transaction/', {
+      const response = await axios.post('http://127.0.0.1:8000/api/chapa/send-request/', {
         // courseId: course.id,
         amount: course.price,
         email: "abebech_bekele@gmail.com",
+        currency: "ETB",
         first_name: "Bilen",
         last_name: "Gizachew",
         phone_number: "0912345678",
-        callback_url: "https://webhook.site/",
-        return_url: "https://www.google.com/",
+        callback_url: "http://localhost:5173/course/core1",
+        return_url: "http://localhost:5173/course/core1",
         description: "Your transaction description here"
       });
-      if (response.data && response.data.checkout_url) {
+      if (response.data && response.data.status === "success") {
         // Redirect the user to the checkout URL
-        window.location.href = response.data.checkout_url;
+        window.location.href = response.data.data.checkout_url;
       } else {
-        // Log an error if checkout_url is missing
+        // Log an error if the payment status is not success
         console.error('Invalid response from payment API:', response.data);
       }
     } catch (error) {
@@ -50,6 +52,12 @@ const SingleCoursePage = () => {
       console.error('Error processing payment:', error);
     }
   };
+  
+
+  const handleVideoEnded = () => {
+    setCurrentVideoIndex(prevIndex => prevIndex + 1);
+  };
+
   if (!course) {
     return <div>Loading...</div>;
   }
@@ -58,6 +66,8 @@ const SingleCoursePage = () => {
     // Redirect to checkout URL
     window.location.href = checkoutUrl;
   }
+
+  const nextVideo = course.upload_videos[currentVideoIndex + 1];
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -68,14 +78,15 @@ const SingleCoursePage = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>
           <Card className="bg-white rounded-sm shadow-md">
-            {course.upload_videos[0].flag ? (
-              <video controls className="w-full h-72 bg-cover object-cover">
-                <source src={course.upload_videos[0].video} type="video/mp4"  />
-                Your browser does not support the video tag.
-              </video>
-            ) : (
-              <img src={course.uploads[0].file} alt={course.title} className="w-full h-auto rounded-t-md shadow-md" />
-            )}
+            <video
+              key={currentVideoIndex}
+              controls
+              className="w-full h-72 bg-cover object-cover mb-4"
+              onEnded={handleVideoEnded}
+            >
+              <source src={`http://127.0.0.1:8000${course.upload_videos[currentVideoIndex].video}`} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
             <div className="p-4">
               <h3 className="text-lg font-semibold mb-2">Course Introduction</h3>
               <p>{course.summary}</p>
@@ -84,6 +95,12 @@ const SingleCoursePage = () => {
               )}
             </div>
           </Card>
+          {nextVideo && (
+            <div className="mt-8">
+              <h3 className="text-lg font-semibold mb-2">Next Video: {nextVideo.title}</h3>
+              <p>Duration: {moment.duration(course.finished, "seconds").humanize()}</p>
+            </div>
+          )}
         </div>
         <div className="md:col-span-1">
           <Card className="bg-white rounded-sm shadow-md">
@@ -98,6 +115,16 @@ const SingleCoursePage = () => {
               <p><span className="font-semibold">Views:</span> {course.views}</p>
               <p><span className="font-semibold">Finished:</span> {moment(course.finished).format('HH:mm')} Hours</p>
             </div>
+          </Card>
+          <Card className="mt-8">
+            <h3 className="text-xl font-semibold text-gray-100 mb-4">Additional Materials</h3>
+            {course.uploads && course.uploads.length > 0 && (
+              <>
+                <h3 className="text-lg font-semibold mb-2">{course.uploads[0].title}</h3>
+                <p>{moment(course.uploads[0].updated_date).format('MMMM Do YYYY, h:mm:ss a')}</p>
+                <a href={course.uploads[0].file} download>Download</a>
+              </>
+            )}
           </Card>
         </div>
         <div>
