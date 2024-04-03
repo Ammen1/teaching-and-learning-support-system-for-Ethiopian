@@ -46,7 +46,7 @@ class ChapaAPI:
 
         data = response.json()
         if data and data.get('status') == 'success' and update_record:
-            transaction.status = models.ChapaStatus.PENDING
+            transaction.status = models.ChapaStatus.SUCCESS
             transaction.checkout_url = data.get('data').get('checkout_url')
             transaction.save()
 

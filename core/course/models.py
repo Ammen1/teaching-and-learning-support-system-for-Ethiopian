@@ -195,7 +195,10 @@ class Upload(models.Model):
     def delete(self, *args, **kwargs):
         self.file.delete()
         super().delete(*args, **kwargs)
-
+    def get_absolute_url(self):
+        return reverse(
+        "upload_single", kwargs={"slug": self.course.slug, "file_slug": self.slug}
+    )
 @receiver(post_save, sender=Upload)
 def log_save(sender, instance, created, **kwargs):
     if created:
@@ -264,109 +267,6 @@ def log_delete(sender, instance, **kwargs):
     ActivityLog.objects.create(
         message=f"The video '{instance.title}' of the course '{instance.course}' has been deleted."
     )
-class Upload(models.Model):
-    title = models.CharField(max_length=100)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    file = models.FileField(
-        upload_to="course_files/",
-        help_text="Valid Files: pdf, docx, doc, xls, xlsx, ppt, pptx, zip, rar, 7zip",
-        validators=[
-            FileExtensionValidator(
-                [
-                    "pdf",
-                    "docx",
-                    "doc",
-                    "xls",
-                    "xlsx",
-                    "ppt",
-                    "pptx",
-                    "zip",
-                    "rar",
-                    "7zip",
-                ]
-            )
-        ],
-    )
-    updated_date = models.DateTimeField(auto_now=True, auto_now_add=False, null=True)
-    upload_time = models.DateTimeField(auto_now=False, auto_now_add=True, null=True)
-    flag = models.BooleanField(default=False)  # Flag for Upload model
-
-    def __str__(self):
-        return str(self.file)[6:]
-
-    def get_extension_short(self):
-        ext = str(self.file).split(".")
-        ext = ext[len(ext) - 1]
-
-        if ext in ("doc", "docx"):
-            return "word"
-        elif ext == "pdf":
-            return "pdf"
-        elif ext in ("xls", "xlsx"):
-            return "excel"
-        elif ext in ("ppt", "pptx"):
-            return "powerpoint"
-        elif ext in ("zip", "rar", "7zip"):
-            return "archive"
-
-    def delete(self, *args, **kwargs):
-        self.file.delete()
-        super().delete(*args, **kwargs)
-
-
-@receiver(post_save, sender=Upload)
-def log_save(sender, instance, created, **kwargs):
-    if created:
-        ActivityLog.objects.create(
-            message=f"The file '{instance.title}' has been uploaded to the course '{instance.course}'."
-        )
-    else:
-        ActivityLog.objects.create(
-            message=f"The file '{instance.title}' of the course '{instance.course}' has been updated."
-        )
-
-
-@receiver(post_delete, sender=Upload)
-def log_delete(sender, instance, **kwargs):
-    ActivityLog.objects.create(
-        message=f"The file '{instance.title}' of the course '{instance.course}' has been deleted."
-    )
-
-
-class UploadVideo(models.Model):
-    title = models.CharField(max_length=100)
-    slug = models.SlugField(blank=True, unique=True)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    video = models.FileField(
-        upload_to="course_videos/",
-        help_text="Valid video formats: mp4, mkv, wmv, 3gp, f4v, avi, mp3",
-        validators=[
-            FileExtensionValidator(["mp4", "mkv", "wmv", "3gp", "f4v", "avi", "mp3"])
-        ],
-    )
-    summary = models.TextField(null=True, blank=True)
-    timestamp = models.DateTimeField(auto_now=False, auto_now_add=True, null=True)
-    flag = models.BooleanField(default=False)  # Flag for UploadVideo model
-
-    def __str__(self):
-        return str(self.title)
-
-    def get_absolute_url(self):
-        return reverse(
-            "video_single", kwargs={"slug": self.course.slug, "video_slug": self.slug}
-        )
-
-    def delete(self, *args, **kwargs):
-        self.video.delete()
-        super().delete(*args, **kwargs)
-
-
-def video_pre_save_receiver(sender, instance, *args, **kwargs):
-    if not instance.slug:
-        instance.slug = unique_slug_generator(instance)
-
-
-pre_save.connect(video_pre_save_receiver, sender=UploadVideo)
 
 class CourseOffer(models.Model):
     dep_head = models.ForeignKey("account.DepartmentHead", on_delete=models.CASCADE)
