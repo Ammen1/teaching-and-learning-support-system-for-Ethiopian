@@ -3,7 +3,8 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { IoTimeOutline } from "react-icons/io5";
 import moment from 'moment';
-import { Card } from 'flowbite-react';
+import { Button, Card } from 'flowbite-react';
+import { useDispatch, useSelector } from 'react-redux';
 
 const SingleCoursePage = () => {
   const { slug } = useParams();
@@ -11,6 +12,9 @@ const SingleCoursePage = () => {
   const [paymentComplete, setPaymentComplete] = useState(false);
   const [checkoutUrl, setCheckoutUrl] = useState('');
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const [showPayNowButton, setShowPayNowButton] = useState(true);
+  const [completedVideos, setCompletedVideos] = useState([]);
+  const { loading, error: errorMessage } = useSelector((state) => state.user);
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -18,6 +22,13 @@ const SingleCoursePage = () => {
         const response = await axios.get(`http://127.0.0.1:8000/api/course/course/single/${slug}/`);
         console.log(response.data.course);
         setCourse(response.data.course);
+
+        // Check payment status and update showPayNowButton state
+        if (response.data.course.payment_status === "success") {
+          setShowPayNowButton(false);
+        } else {
+          setShowPayNowButton(true);
+        }
       } catch (error) {
         console.error('Error fetching course data:', error);
       }
@@ -29,7 +40,7 @@ const SingleCoursePage = () => {
   const handlePayment = async () => {
     try {
       const response = await axios.post('http://127.0.0.1:8000/api/chapa/send-request/', {
-        // courseId: course.id,
+        course_id: course.id,
         amount: course.price,
         email: "abebech_bekele@gmail.com",
         currency: "ETB",
@@ -43,6 +54,7 @@ const SingleCoursePage = () => {
       if (response.data && response.data.status === "success") {
         // Redirect the user to the checkout URL
         window.location.href = response.data.data.checkout_url;
+        setShowPayNowButton(false); // Hide the "Pay Now" button
       } else {
         // Log an error if the payment status is not success
         console.error('Invalid response from payment API:', response.data);
@@ -52,10 +64,19 @@ const SingleCoursePage = () => {
       console.error('Error processing payment:', error);
     }
   };
-  
 
   const handleVideoEnded = () => {
-    setCurrentVideoIndex(prevIndex => prevIndex + 1);
+    setCurrentVideoIndex(prevIndex => {
+      if (prevIndex < course.upload_videos.length - 1) {
+        // If the current video is not the last one, move to the next video
+        return prevIndex + 1;
+      } else {
+        // If the current video is the last one, display a congratulatory message
+        alert("Congratulations! You have finished your course.");
+        return prevIndex;
+      }
+    });
+    setCompletedVideos(prevVideos => [...prevVideos, currentVideoIndex]);
   };
 
   if (!course) {
@@ -67,8 +88,6 @@ const SingleCoursePage = () => {
     window.location.href = checkoutUrl;
   }
 
-  const nextVideo = course.upload_videos[currentVideoIndex + 1];
-
   return (
     <div className="container mx-auto px-4 py-8">
       <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-8">
@@ -78,65 +97,73 @@ const SingleCoursePage = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>
           <Card className="bg-white rounded-sm shadow-md">
-            <video
-              key={currentVideoIndex}
-              controls
-              className="w-full h-72 bg-cover object-cover mb-4"
-              onEnded={handleVideoEnded}
-            >
-              <source src={`http://127.0.0.1:8000${course.upload_videos[currentVideoIndex].video}`} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-            <div className="p-4">
-              <h3 className="text-lg font-semibold mb-2">Course Introduction</h3>
-              <p>{course.summary}</p>
-              {!paymentComplete && (
-                <button onClick={handlePayment} className="mt-4 py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Enroll Now</button>
+            <div className="relative">
+              <video
+                key={currentVideoIndex}
+                controls
+                className="w-full h-auto bg-black mb-4 rounded-lg"
+                src={`http://127.0.0.1:8000${course.upload_videos[currentVideoIndex].video}`}
+                onEnded={handleVideoEnded}
+              >
+                Your browser does not support the video tag.
+              </video>
+              {showPayNowButton && (
+                <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+                  <Button onClick={handlePayment} className="text-white bg-blue-500 py-2 px-4 rounded-full hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Enroll Now</Button>
+                </div>
               )}
             </div>
-          </Card>
-          {nextVideo && (
-            <div className="mt-8">
-              <h3 className="text-lg font-semibold mb-2">Next Video: {nextVideo.title}</h3>
-              <p>Duration: {moment.duration(course.finished, "seconds").humanize()}</p>
+            <div className="p-4">
+              <p><strong>Summary:</strong> {course.summary}</p>
+              <p><strong>Duration:</strong> {moment(course.finished).format('HH:mm')} Hours</p>
+              <p><strong>Level:</strong> {course.level}</p>
+              <p><strong>Views:</strong> {course.views}</p>
+              <p><strong>Price:</strong> {course.price}</p>
             </div>
-          )}
+          </Card>
         </div>
         <div className="md:col-span-1">
-          <Card className="bg-white rounded-sm shadow-md">
-            <div className="p-4">
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">Course Details</h3>
-              <p><span className="font-semibold">Course Code:</span> {course.code}</p>
-              <p><span className="font-semibold">Level:</span> {course.level}</p>
-              <p><span className="font-semibold">Year:</span> {course.year}</p>
-              <p><span className="font-semibold">Semester:</span> {course.semester}</p>
-              <p><span className="font-semibold">Credit:</span> {course.credit}</p>
-              <p><span className="font-semibold">Price:</span> {course.price}</p>
-              <p><span className="font-semibold">Views:</span> {course.views}</p>
-              <p><span className="font-semibold">Finished:</span> {moment(course.finished).format('HH:mm')} Hours</p>
-            </div>
-          </Card>
-          <Card className="mt-8">
-            <h3 className="text-xl font-semibold text-gray-100 mb-4">Additional Materials</h3>
-            {course.uploads && course.uploads.length > 0 && (
-              <>
-                <h3 className="text-lg font-semibold mb-2">{course.uploads[0].title}</h3>
-                <p>{moment(course.uploads[0].updated_date).format('MMMM Do YYYY, h:mm:ss a')}</p>
-                <a href={course.uploads[0].file} download>Download</a>
-              </>
-            )}
-          </Card>
-        </div>
-        <div>
-          <Card className="bg-white rounded-sm shadow-md">
-            <div className="p-4">
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">Lecturer Details</h3>
-              <p><span className="font-semibold">Username:</span> {course.lecturer.username}</p>
-              <p><span className="font-semibold">Email:</span> {course.lecturer.email}</p>
-            </div>
-          </Card>
+        <Card className="bg-white rounded-sm shadow-md">
+  <div className="p-2">
+    <h3 className="text-xl font-semibold text-gray-8100 mb-4">Course Details</h3>
+    <p><strong>Payment Status:</strong> {course.payment_status}</p>
+    <p><strong>Title:</strong> {course.title}</p>
+        <p><strong>Charge:</strong> {course.charge}</p>
+        <p><strong>Transaction Reference:</strong> {course.tx_ref}</p>
+    {course.data && (
+      <>
+        <h4 className="text-lg font-semibold mt-4 mb-2">Course Videos</h4>
+        {course.data.course_videos.map((video, index) => (
+          <div key={index}>
+            <p><strong>Video Title:</strong> {video.title}</p>
+            <p><strong>Summary:</strong> {video.summary}</p>
+            {/* Add any other video details you want to display */}
+          </div>
+        ))}
+      </>
+    )}
+  </div>
+</Card>
+
         </div>
       </div>
+      {course.upload_videos.map((video, i) => (
+        <Card key={i} className="bg-black rounded-sm shadow-md mb-4 w-full mt-10">
+          <div className="p-2">
+            <h3 className="text-lg font-semibold mb-2">{video.title}</h3>
+            <video
+              disabled={loading}
+              key={currentVideoIndex + 1}
+              className="w-full h-20 bg-black mb-4 rounded-lg"
+              controls
+            >
+              <source src={`http://127.0.0.1:8000${video.video}`} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+            <p>{video.summary}</p>
+          </div>
+        </Card>
+      ))}
     </div>
   );
 };

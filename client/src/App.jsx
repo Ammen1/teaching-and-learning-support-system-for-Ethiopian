@@ -22,7 +22,7 @@ export default function App() {
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/courses' element={<CourseCategory />} />
-        <Route path='/course' element={<PaymentSuccessPage />} />
+        <Route path='/payment-success/:trx_ref' element={<PaymentSuccessPage />} />
         <Route path='/course/:slug' element={<SingleCoursePage />} />
         <Route path='/sign-in' element={<SignIn />} />
         <Route path='/sign-up' element={<SignUp />} />
