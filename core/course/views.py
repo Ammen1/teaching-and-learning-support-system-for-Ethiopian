@@ -69,6 +69,8 @@ class ProgramDeleteView(DestroyAPIView):
 # Course views
 # #####################
 
+
+
 from rest_framework import generics
 from rest_framework.response import Response
 from .models import Course, Upload, UploadVideo, CourseAllocation
@@ -77,29 +79,33 @@ from .serializers import CourseSerializer, UploadFormFileSerializer, UploadFormV
 class CourseAPIView(generics.ListAPIView):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
-    # lookup_field = 'slug'
 
-    def retrieve(self, request, *args, **kwargs):
-        course = self.get_object()
-        files = Upload.objects.filter(course=course)
-        videos = UploadVideo.objects.filter(course=course)
-        lecturers = CourseAllocation.objects.filter(courses=course)
+    def list(self, request, *args, **kwargs):
+        courses = self.get_queryset()
 
-        # Serialize the data
-        course_serializer = self.serializer_class(course)
-        files_serializer = UploadFormFileSerializer(files, many=True)
-        videos_serializer = UploadFormVideoSerializer(videos, many=True)
+        course_data = []
+        for course in courses:
+            uploads = Upload.objects.filter(course=course)
+            course_videos = UploadVideo.objects.filter(course=course)
+            lecturers = CourseAllocation.objects.filter(courses=course)
 
-        # Create the response data
-        response_data = {
-            "course": course_serializer.data,
-            "files": files_serializer.data,
-            "videos": videos_serializer.data,
-            "lecturers": lecturers.values(),  # Convert QuerySet to a list
-        }
+            course_serializer = self.serializer_class(course)
+            files_serializer = UploadFormFileSerializer(uploads, many=True)
+            videos_serializer = UploadFormVideoSerializer(course_videos, many=True)
 
-        return Response(response_data)
+            course_data.append({
+                "course": course_serializer.data,
+                "uploads": files_serializer.data,
+                "course_videos": videos_serializer.data,
+                "lecturers": lecturers.values(),  # Convert QuerySet to a list
+            })
 
+        return Response(course_data)
+
+from rest_framework.response import Response
+from rest_framework import generics
+from .serializers import CourseSerializer, UploadFormFileSerializer, UploadFormVideoSerializer, LecturerSerializer  # Import your serializer for lecturers
+from .models import Course, Upload, UploadVideo, CourseAllocation  # Import your models
 
 class CourseSingleAPIView(generics.RetrieveAPIView):
     queryset = Course.objects.all()
@@ -109,20 +115,23 @@ class CourseSingleAPIView(generics.RetrieveAPIView):
 
     def retrieve(self, request, *args, **kwargs):
         course = self.get_object()
-        files = Upload.objects.filter(course=course)
-        videos = UploadVideo.objects.filter(course=course)
+        uploads = Upload.objects.filter(course=course)
+        course_videos = UploadVideo.objects.filter(course=course)
         lecturers = CourseAllocation.objects.filter(courses=course)
 
-        course_serializer = CourseSerializer(course)
-        files_serializer = UploadFormFileSerializer(files, many=True)
-        videos_serializer = UploadFormVideoSerializer(videos, many=True)
+        course_serializer = self.serializer_class(course)
+        files_serializer = UploadFormFileSerializer(uploads, many=True)
+        videos_serializer = UploadFormVideoSerializer(course_videos, many=True)
+        # Serialize each lecturer
+        lecturers_data = [LecturerSerializer(lecturer.lecturer).data for lecturer in lecturers]
 
         return Response({
             "course": course_serializer.data,
-            "files": files_serializer.data,
-            "videos": videos_serializer.data,
-            "lecturers": lecturers.values(),  # Convert QuerySet to a list
+            "uploads": files_serializer.data,
+            "course_videos": videos_serializer.data,
+            "lecturers": lecturers.values(),
         })
+
 
 
    
@@ -166,10 +175,10 @@ class CourseAllocationAPIView(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
 
-        if user.is_lecturer:
-            queryset = CourseAllocation.objects.filter(lecturer=user)
-        else:
-            queryset = CourseAllocation.objects.all()
+        # if user.is_lecturer:
+        #     queryset = CourseAllocation.objects.filter(lecturer=user)
+        # else:
+        queryset = CourseAllocation.objects.all()
 
         # Annotate the queryset with additional information about courses
         queryset = queryset.annotate(

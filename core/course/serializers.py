@@ -31,6 +31,7 @@ class CourseSerializer(serializers.ModelSerializer):
     uploads = UploadFormFileSerializer(many=True, read_only=True)
     upload_videos = UploadFormVideoSerializer(many=True, source='uploadvideo_set')
     lecturer = serializers.SerializerMethodField()
+    payment_status = serializers.SerializerMethodField()
 
     class Meta:
         model = Course
@@ -44,10 +45,16 @@ class CourseSerializer(serializers.ModelSerializer):
                 'username': lecturer.username,
                 'email': lecturer.email,
                 'full_name': lecturer.get_full_name,
-                'picture': lecturer.get_picture(),  # Get the URL of the picture
-                # Add other fields you want to include
+                'picture': lecturer.get_picture(), 
             }
         return None
+
+    def get_payment_status(self, obj):
+        latest_transaction = obj.transactions.order_by('-course_id').first()
+        if latest_transaction:
+            return latest_transaction.status
+        return None
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
