@@ -1,25 +1,41 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
 const PaymentSuccessPage = () => {
-  // State to store payment and course details
+  const { trx_ref } = useParams(); // Extracting transaction ID from URL
   const [paymentDetails, setPaymentDetails] = useState(null);
   const [courseDetails, setCourseDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Fetch payment details and course details from your API
+    // Fetch payment details and course details from your API using the dynamic transaction ID
     const fetchPaymentDetails = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/chapa/verify-payment/59741c3f-023a-451c-bf22-1a54d4c8262a/');
+        const response = await fetch(`http://127.0.0.1:8000/api/chapa/verify-payment/${trx_ref}/`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch payment details');
+        }
         const data = await response.json();
         setPaymentDetails(data.data);
         setCourseDetails(data.course_details);
       } catch (error) {
-        console.error('Error fetching payment details:', error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchPaymentDetails();
-  }, []);
+  }, [trx_ref]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div>
@@ -39,7 +55,6 @@ const PaymentSuccessPage = () => {
           <h2>Course Details:</h2>
           <p>Title: {courseDetails.title}</p>
           <p>Summary: {courseDetails.summary}</p>
-          {/* Display lecturer details */}
           <p>Lecturer: {courseDetails.lecturer.username}</p>
           <p>Email: {courseDetails.lecturer.email}</p>
           {/* Display uploads and course videos */}
