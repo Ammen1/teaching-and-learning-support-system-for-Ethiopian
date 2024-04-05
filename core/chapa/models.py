@@ -1,5 +1,7 @@
 from django.db import models
 from uuid import uuid4
+from course.models import Course
+
 
 
 class ChapaStatus(models.TextChoices):
@@ -12,6 +14,7 @@ class ChapaStatus(models.TextChoices):
 class ChapaTransactionMixin(models.Model):
     "inherit this model and add your own extra fields"
     id = models.UUIDField(primary_key=True, default=uuid4)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='transactions')
     trx_ref = models.CharField(max_length=255, null=True, blank=True)
     amount = models.FloatField()
     currency = models.CharField(max_length=25, default='ETB')

@@ -38,7 +38,7 @@ class ChapaAPI:
             'callback_url': CALLBACK_URL,
             'customization[title]': transaction.payment_title,
             'customization[description]': transaction.description,
-            'phone_number': transaction.phone_number
+            'phone_number': transaction.phone_number,
         }
 
         transaction_url = f'{cls.get_base_url()}/transaction/initialize'
@@ -46,7 +46,7 @@ class ChapaAPI:
 
         data = response.json()
         if data and data.get('status') == 'success' and update_record:
-            transaction.status = models.ChapaStatus.SUCCESS
+            transaction.status = models.ChapaStatus.PENDING
             transaction.checkout_url = data.get('data').get('checkout_url')
             transaction.save()
 
