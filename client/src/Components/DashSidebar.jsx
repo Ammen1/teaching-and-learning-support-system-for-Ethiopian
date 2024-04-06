@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { signoutSuccess } from '../redux/user/userSlice';
-import { HiUser, HiArrowSmRight, HiDocumentText, HiOutlineUserGroup, HiAnnotation, HiChartPie, HiBell, HiOutlineBadgeCheck, HiEmojiHappy, HiPlus } from 'react-icons/hi';
-import { MdAttachFile, MdKeyboardArrowDown, MdKeyboardArrowUp, MdOutlineKeyboardArrowRight, MdOutlineKeyboardArrowUp, MdOutlineKeyboardDoubleArrowDown } from 'react-icons/md';
 import { Sidebar } from 'flowbite-react';
+import { 
+  HiUser, 
+  HiArrowSmRight, 
+  HiChartPie, 
+  HiPlus 
+} from 'react-icons/hi';
 
 const DashboardSidebar = () => {
   const location = useLocation();
@@ -37,23 +41,20 @@ const DashboardSidebar = () => {
   };
 
   const getLabelBasedOnRole = () => {
-    if (currentUser.is_superuser) {
-      return 'Admin';
-    } else if (currentUser.is_student) {
-      return 'Student';
-    } else if (currentUser.is_lecturer) {
-      return 'Lecturer';
-    } else if (currentUser.is_parent) {
-      return 'Parent';
-    } else {
-      return 'Unknown Role';
-    }
+    const roleLabels = {
+      'Admin': 'Admin',
+      'Student': 'Student',
+      'Lecturer': 'Lecturer',
+      'Parent': 'Parent',
+      'Unknown': 'Unknown Role'
+    };
+    return roleLabels[currentUser.user_role] || roleLabels['Unknown'];
   };
 
   return (
-    <Sidebar className="w-full md:w-56">
-      <Sidebar.Items>
-        <Sidebar.ItemGroup className="flex flex-col gap-1">
+    <Sidebar className=" ">
+      <Sidebar.Items className=' '>
+        <Sidebar.ItemGroup className="flex flex-col gap-1 ">
           {currentUser.user_role === 'Admin' && (
             <Link to="/dashboard?tab=dash">
               <Sidebar.Item
@@ -76,11 +77,28 @@ const DashboardSidebar = () => {
               Profile
             </Sidebar.Item>
           </Link>
-          {/* Add more sidebar items based on user roles */}
-          {/* Example: currentUser.is_student && (<Link ...></Link>) */}
-          {/* Example: currentUser.is_lecturer && (<Link ...></Link>) */}
-          {/* Example: currentUser.is_parent && (<Link ...></Link>) */}
-          {/* Example: currentUser.is_superuser && (<Link ...></Link>) */}
+          {currentUser.user_role === 'Admin' && (
+            <Link to="/dashboard?tab=staffAdd">
+              <Sidebar.Item
+                active={tab === 'staffAdd' || !tab}
+                icon={HiPlus}
+                as="div"
+              >
+                StaffAdd
+              </Sidebar.Item>
+            </Link>
+          )}
+          {currentUser.user_role === 'Admin' && (
+            <Link to="/dashboard?tab=addstudents">
+              <Sidebar.Item
+                active={tab === 'addstudents' || !tab}
+                icon={HiPlus}
+                as="div"
+              >
+                AddStudent
+              </Sidebar.Item>
+            </Link>
+          )}
           <Sidebar.Item
             icon={HiArrowSmRight}
             className="cursor-pointer"
