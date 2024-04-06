@@ -195,31 +195,22 @@ class EmailValidationOnForgotPasswordSerializer(serializers.Serializer):
 
     def validate_email(self, value):
         if not User.objects.filter(email__iexact=value, is_active=True).exists():
-            raise serializers.ValidationError("There is no user registered with the specified E-mail address.")
+            raise serializers.ValidationError("There is no active user registered with the specified E-mail address.")
         return value
 
     def create(self, validated_data):
-        try:
-            validated_email = validated_data['email']
-            # Try to get a single user with the specified email
-            user = User.objects.get(email__iexact=validated_data['email'])
-        except User.DoesNotExist:
-            # Handle the case where no user is found
-            raise serializers.ValidationError("There is no user registered with the specified E-mail address.")
-        except User.MultipleObjectsReturned:
-            # Handle the case where multiple users are found
-            raise serializers.ValidationError("Multiple users found with the specified E-mail address. Contact support.")
+        validated_email = validated_data['email']
+        user = User.objects.get(email__iexact=validated_email)
 
-        # Generate a password reset token
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = default_token_generator.make_token(user)
 
         user.password_reset_token = token
         user.save()
 
-        frontend_url = "http://127.0.0.1:8000/api/forgot-password/"  
+        frontend_url = "http://localhost:5173/dashboard?tab=addstudents/"  # Adjust the frontend URL
 
-        reset_link = f"{frontend_url}/reset-password/{uid}/{token}/"
+        reset_link = f"{frontend_url}{uid}/{token}/"
         send_mail(
             "Password Reset",
             f"Click the following link to reset your password: {reset_link}",
