@@ -9,6 +9,8 @@ import Courses from './Courses';
 
 import Resources from '../Components/Resources';
 import DashboardSidebar from '../Components/DashSidebar';
+import StaffAdd from './StaffAdd';
+import AddStudent from './AddStudent';
 
 export default function Dashboard() {
   const location = useLocation();
@@ -22,7 +24,7 @@ export default function Dashboard() {
   }, [location.search]);
   return (
     <div className='min-h-screen flex flex-col md:flex-row  '>
-      <div className='md:w-56'>
+      <div className=''>
         <DashboardSidebar />
       </div>
    
@@ -33,6 +35,8 @@ export default function Dashboard() {
       {tab === 'dash' && <DashboardComp />}
       {tab === 'course' && <Courses />}
       {tab === 'resources' && <Resources />}
+      {tab === 'staffAdd' && <StaffAdd />}
+      {tab === 'addstudents' && <AddStudent />}
     </div>
   );
 }
