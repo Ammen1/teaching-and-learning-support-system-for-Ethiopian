@@ -13,7 +13,7 @@ import MobileNav from "../Components/MobileNav";
 
 const App = () => {
   return (
-    <div className=" dark:bg-white"> 
+    <div className=" bg-white mt-20 "> 
       <MobileNav />
       <Hero />
       <CourseOutlet />
