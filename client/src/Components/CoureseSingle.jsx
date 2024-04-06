@@ -54,9 +54,8 @@ const SingleCoursePage = () => {
       if (response.data && response.data.status === "success") {
         // Redirect the user to the checkout URL
         window.location.href = response.data.data.checkout_url;
-        setShowPayNowButton(false); // Hide the "Pay Now" button
+        setShowPayNowButton(false); 
       } else {
-        // Log an error if the payment status is not success
         console.error('Invalid response from payment API:', response.data);
       }
     } catch (error) {
@@ -84,24 +83,22 @@ const SingleCoursePage = () => {
   }
 
   if (paymentComplete) {
-    // Redirect to checkout URL
     window.location.href = checkoutUrl;
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-8">
+    <div className="container bg-white mx-auto px-4 py-8 text-black mt-20">
+      <h2 className="text-3xl md:text-4xl font-bold text-center text-black mb-8">
         {course.title}
       </h2>
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>
-          <Card className="bg-white rounded-sm shadow-md">
-            <div className="relative">
+          <Card className="bg-white rounded-sm border dark:bg-white dark:border-slate-100">
+            <div className="">
               <video
                 key={currentVideoIndex}
                 controls
-                className="w-full h-auto bg-black mb-4 rounded-lg"
+                className="w-full h-auto bg-black mb-4 rounded-lg bg-cover"
                 src={`http://127.0.0.1:8000${course.upload_videos[currentVideoIndex].video}`}
                 onEnded={handleVideoEnded}
               >
@@ -113,48 +110,45 @@ const SingleCoursePage = () => {
                 </div>
               )}
             </div>
-            <div className="p-4">
+            <div className="p-4">                      
+              <p><strong>Coures:</strong> {course.title}</p>
+              <p><strong>Level:</strong> {course.level}</p>
               <p><strong>Summary:</strong> {course.summary}</p>
               <p><strong>Duration:</strong> {moment(course.finished).format('HH:mm')} Hours</p>
-              <p><strong>Level:</strong> {course.level}</p>
-              <p><strong>Views:</strong> {course.views}</p>
-              <p><strong>Price:</strong> {course.price}</p>
             </div>
           </Card>
         </div>
         <div className="md:col-span-1">
-        <Card className="bg-white rounded-sm shadow-md">
-  <div className="p-2">
-    <h3 className="text-xl font-semibold text-gray-8100 mb-4">Course Details</h3>
-    <p><strong>Payment Status:</strong> {course.payment_status}</p>
-    <p><strong>Title:</strong> {course.title}</p>
-        <p><strong>Charge:</strong> {course.charge}</p>
-        <p><strong>Transaction Reference:</strong> {course.tx_ref}</p>
-    {course.data && (
-      <>
+        <Card className="dark:bg-white rounded-sm shadow-md">
+        <div className="p-2">
+          <h3 className="text-xl font-semibold text-gray-8100 mb-4">Course Details</h3>
+          <p><strong>Payment Status:</strong> {course.payment_status}</p>
+          <p><strong>Course Name:</strong> {course.title}</p>
+          <p><strong>Level:</strong> {course.level}</p>
+          <p><strong>Duration:</strong> {moment(course.finished).format('HH:mm')} Hours</p>
+         {course.data && (
+         <>
         <h4 className="text-lg font-semibold mt-4 mb-2">Course Videos</h4>
         {course.data.course_videos.map((video, index) => (
           <div key={index}>
             <p><strong>Video Title:</strong> {video.title}</p>
             <p><strong>Summary:</strong> {video.summary}</p>
-            {/* Add any other video details you want to display */}
           </div>
         ))}
       </>
-    )}
-  </div>
-</Card>
-
-        </div>
+      )}
       </div>
+    </Card>
+    </div>
+    </div>
       {course.upload_videos.map((video, i) => (
-        <Card key={i} className="bg-black rounded-sm shadow-md mb-4 w-full mt-10">
+        <Card key={i} className="dark:bg-gray-100 rounded-sm shadow-md mb-4 w-full mt-10">
           <div className="p-2">
             <h3 className="text-lg font-semibold mb-2">{video.title}</h3>
             <video
               disabled={loading}
               key={currentVideoIndex + 1}
-              className="w-full h-20 bg-black mb-4 rounded-lg"
+              className="w-full h-10 dark:bg-gray-100 mb-4 rounded-lg"
               controls
             >
               <source src={`http://127.0.0.1:8000${video.video}`} type="video/mp4" />
