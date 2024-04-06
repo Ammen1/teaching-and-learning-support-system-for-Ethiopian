@@ -1,25 +1,21 @@
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.apps import apps
 import json
 import logging
 import uuid
 import requests
-
-from django.apps import apps
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework import status
-
-from .api import ChapaAPI
+from django.shortcuts import get_object_or_404
 from .models import ChapaTransaction
 from .serializers import ChapaTransactionSerializer
+from .api import ChapaAPI
 from course.models import Course, UploadVideo
-
-
+from django.views.decorators.csrf import csrf_exempt
 logger = logging.getLogger(__name__)
-
 
 class InitiateChapaTransactionView(APIView):
     @csrf_exempt
@@ -40,6 +36,7 @@ class InitiateChapaTransactionView(APIView):
             payload['tx_ref'] = tx_ref
             
             url = "https://api.chapa.co/v1/transaction/initialize"
+
             headers = {
                 'Authorization': 'Bearer CHASECK_TEST-WLA5A4peABCYzMIKSaze3aYnfRBlpWDk',
                 'Content-Type': 'application/json'
@@ -54,8 +51,6 @@ class InitiateChapaTransactionView(APIView):
                 return JsonResponse({'error': chapa_response_data.get('message', 'Unknown error')}, status=response.status_code)
         else:
             return JsonResponse({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-
-
 @api_view(['POST'])
 def send_request(request):
     try:
@@ -103,10 +98,17 @@ def send_request(request):
     except Exception as e:
         # Handle any exceptions and return an appropriate error response
         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+from django.shortcuts import get_object_or_404
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from .models import ChapaTransaction
+from .api import ChapaAPI
 
+from django.shortcuts import get_object_or_404
 
 @api_view(['GET'])
-def verify_payment(request, transaction_id):
+def verify_payment(requests, transaction_id):
     try:
         # Retrieve the ChapaTransaction object
         transaction = get_object_or_404(ChapaTransaction, id=transaction_id)
@@ -165,6 +167,16 @@ def verify_payment(request, transaction_id):
         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
+from rest_framework.views import APIView
+from rest_framework import status
+from django.apps import apps
+import json
+import logging
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+
+logger = logging.getLogger(__name__)
+
 @method_decorator(csrf_exempt, name='dispatch')
 class ChapaWebhookView(APIView):
     def get(self, request):
@@ -176,7 +188,7 @@ class ChapaWebhookView(APIView):
 
             # Validate the presence of required parameters
             if not callback or not trx_ref or not status:
-                return JsonResponse({'error': "Missing required parameters"}, status=status.HTTP_400_BAD_REQUEST)
+                return JsonResponse({'error': "Missing required parameters"}, status=400)
 
             # Handle the webhook data
             model_class = apps.get_model(app_label='chapa', model_name='ChapaTransaction')
@@ -188,4 +200,4 @@ class ChapaWebhookView(APIView):
             return JsonResponse({'message': "Transaction updated successfully"})
 
         except model_class.DoesNotExist:
-            return JsonResponse({'error': "Invalid Transaction"}, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse({'error': "Invalid Transaction"}, status=400)

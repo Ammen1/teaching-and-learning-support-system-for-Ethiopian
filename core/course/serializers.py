@@ -6,8 +6,12 @@ class UploadVideoSerializer(serializers.ModelSerializer):
     class Meta:
         model = UploadVideo
         fields = '__all__'
-from rest_framework import serializers
-from .models import Upload
+        
+class UploadFileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Upload
+        fields = '__all__'
+
 
 class UploadFormFileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -16,8 +20,6 @@ class UploadFormFileSerializer(serializers.ModelSerializer):
         
 
 class UploadFormVideoSerializer(serializers.ModelSerializer):
-    # video = UploadVideoSerializer(many=True, source='uploadvideo_set')
-
     class Meta:
         model = UploadVideo
         fields = '__all__'
@@ -25,8 +27,8 @@ class UploadFormVideoSerializer(serializers.ModelSerializer):
 class LecturerSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = '__all__'  # You can customize this based on the fields you want to include        
-
+        fields = '__all__' 
+        
 class CourseSerializer(serializers.ModelSerializer):
     uploads = UploadFormFileSerializer(many=True, read_only=True)
     upload_videos = UploadFormVideoSerializer(many=True, source='uploadvideo_set')

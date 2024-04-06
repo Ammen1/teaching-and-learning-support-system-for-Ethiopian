@@ -5,6 +5,7 @@ from .views import *
 
 urlpatterns = [
     path('program/add/', ProgramAPIView.as_view(), name='program_add'),
+    path('program/all/', ProgramListView.as_view(), name='program_add'),
     path('program/<int:pk>/', ProgramDetailView.as_view(), name='program_edit'),
     path('program/<int:pk>/edit/', ProgramEditView.as_view(), name='program_edit_api'),
     path('program/delete/<int:pk>/', ProgramDeleteView.as_view(), name='program_delete_api'),
@@ -20,6 +21,7 @@ urlpatterns = [
     path('course-registration/', CourseRegistrationView.as_view(), name='course_registration'),
     path('course-drop/', CourseDropView.as_view(), name='course_drop'),
     path('user-course-list/', UserCourseListView.as_view(), name='user_course_list'),
+    path('upload/', FileUploads.as_view(), name='file_upload_api'),
     path('upload/<slug:slug>/', FileUploadAPIView.as_view(), name='file_upload_api'),
     path('upload/<slug:slug>/<int:file_id>/', FileEditDeleteAPIView.as_view(), name='file_edit_delete_api'),
     path('upload/<slug>/video_tutorials/upload/', VideoUploadAPIView.as_view(), name='video_upload_api'),

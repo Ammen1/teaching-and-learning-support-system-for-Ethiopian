@@ -21,35 +21,60 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-
-class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
-        token['username'] = user.username
-        return token
-
-class MyTokenObtainPairView(TokenObtainPairView):
-    serializer_class = MyTokenObtainPairSerializer
-    permission_classes = [AllowAny]  # Allow any user to obtain a token
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        response_data = {
-            'access_token': str(serializer.validated_data['access']),
-            'refresh_token': str(serializer.validated_data['refresh']),
-            'username': user.username,
-            'user_role': user.get_user_role,  # Custom method to get user role
-        }
-        return Response(response_data)
-    
-
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import UserSerializers
+
+
+# class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+#     @classmethod
+#     def get_token(cls, user):
+#         token = super().get_token(user)
+#         token['username'] = user.username
+#         return token
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Add custom claims
+        token['username'] = user.username
+        token['user_role'] = user.get_user_role  
+
+        return token
+
+    def validate(self, attrs):
+        data = super().validate(attrs)
+
+        # Add custom fields to the response data
+        data['username'] = self.user.username
+        data['email'] = self.user.email
+        data['user_role'] = self.user.get_user_role
+        print(data)
+        return data
+    
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+    # permission_classes = [AllowAny]  # Allow any user to obtain a token
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        response_data = {
+            'access_token': str(serializer.validated_data['access']),
+            'refresh_token': str(serializer.validated_data['refresh']),
+            'user_role': str(serializer.validated_data['user_role']),
+            'email': str(serializer.validated_data['email']),
+       
+        }
+        print(response_data)
+        return Response(response_data)
+    
+
+
 
 class SignUpView(APIView):
     def post(self, request):
@@ -72,32 +97,6 @@ class UserLoginView(APIView):
         access_token = str(refresh.access_token)
 
         return Response({"access_token": access_token}, status=status.HTTP_200_OK)
-
-
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-
-class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
-
-        # Add custom claims
-        token['username'] = user.username
-        token['user_role'] = user.get_user_role  
-
-        return token
-
-    def validate(self, attrs):
-        data = super().validate(attrs)
-
-        # Add custom fields to the response data
-        data['username'] = self.user.username
-        data['email'] = self.user.email
-        data['user_role'] = self.user.get_user_role
-
-        return data
-
 
 
 
@@ -155,7 +154,7 @@ class EmailValidationOnForgotPasswordView(generics.CreateAPIView):
         user.save()
 
         # frontend URL here or retrieve it dynamicallyss
-        frontend_url = "http://127.0.0.1:8000/admin"  # Replace with your actual frontend URL
+        frontend_url = "http://127.0.0.1:8000/api/account"  
 
         # Create a reset link with the token
         reset_link = f"{frontend_url}/reset-password/{uid}/{token}/"

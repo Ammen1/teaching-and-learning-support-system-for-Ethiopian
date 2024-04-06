@@ -15,10 +15,20 @@ from .filters import ProgramFilter, CourseAllocationFilter
 from rest_framework.views import APIView
 from django.db.models import Count, OuterRef, Subquery, F, Func, Value
 from rest_framework import generics
-from .models import CourseAllocation
 from .serializers import CourseAllocationSerializer
 from .filters import CourseAllocationFilter
 from django.db.models import CharField
+from rest_framework import generics
+from rest_framework.response import Response
+from .models import Course, Upload, UploadVideo, CourseAllocation
+from .serializers import CourseSerializer, UploadFormFileSerializer, UploadFormVideoSerializer, LecturerSerializer 
+from rest_framework.response import Response
+from rest_framework import generics
+from reult.models import TakenCourse
+from account.serializers import StudentAddSerializer 
+from account.models import Student
+from cores.models import Semester
+  
 
 
 
@@ -36,6 +46,11 @@ class ProgramAPIView(CreateAPIView):
     def program_add(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
 
+
+class ProgramListView(generics.ListAPIView):
+    queryset = Program.objects.all()
+    serializer_class = ProgramSerializer
+ 
 
 
 class ProgramDetailView(RetrieveAPIView):
@@ -70,12 +85,6 @@ class ProgramDeleteView(DestroyAPIView):
 # #####################
 
 
-
-from rest_framework import generics
-from rest_framework.response import Response
-from .models import Course, Upload, UploadVideo, CourseAllocation
-from .serializers import CourseSerializer, UploadFormFileSerializer, UploadFormVideoSerializer
-
 class CourseAPIView(generics.ListAPIView):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
@@ -102,10 +111,7 @@ class CourseAPIView(generics.ListAPIView):
 
         return Response(course_data)
 
-from rest_framework.response import Response
-from rest_framework import generics
-from .serializers import CourseSerializer, UploadFormFileSerializer, UploadFormVideoSerializer, LecturerSerializer  # Import your serializer for lecturers
-from .models import Course, Upload, UploadVideo, CourseAllocation  # Import your models
+
 
 class CourseSingleAPIView(generics.RetrieveAPIView):
     queryset = Course.objects.all()
@@ -134,7 +140,6 @@ class CourseSingleAPIView(generics.RetrieveAPIView):
 
 
 
-   
 class CourseAddAPIView(generics.CreateAPIView):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
@@ -236,22 +241,6 @@ class CourseAllocationFilterAPIView(APIView):
         serializer = CourseAllocationSerializer(filtered_queryset, many=True)
         return Response(serializer.data)    
     
-    
-    
-# views.py
-
-from django.shortcuts import get_object_or_404
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
-from .models import Course
-from reult.models import TakenCourse
-# from .serializers import  CourseSerializer, TakenCourseSerializer
-from account.serializers import StudentAddSerializer 
-from account.models import Student
-from cores.models import Semester
-
 
 class CourseRegistrationView(APIView):
     permission_classes = [IsAuthenticated]
@@ -342,7 +331,6 @@ class CourseDropView(APIView):
 
 class UserCourseListView(APIView):
     # permission_classes = [IsAuthenticated]
-
     def get(self, request, *args, **kwargs):
         if request.user.is_lecturer:
             courses = Course.objects.filter(allocated_course__lecturer__pk=request.user.id)
@@ -368,14 +356,12 @@ class UserCourseListView(APIView):
             return Response({"detail": "User is neither a lecturer nor a student."})
 
 
-
-from .serializers import UploadFormFileSerializer
-from django.contrib import messages
-
+class FileUploads(generics.ListAPIView):
+    serializer_class = UploadFormFileSerializer
+    queryset = Upload.objects.all()
 
 class FileUploadAPIView(APIView):
     # permission_classes = [IsAuthenticated]
-
     def post(self, request, slug):
         course = get_object_or_404(Course, slug=slug)
         serializer = UploadFormFileSerializer(data=request.data)
@@ -393,8 +379,6 @@ class FileUploadAPIView(APIView):
         return Response({"error": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-
-from .serializers import UploadFormFileSerializer
 
 class FileEditDeleteAPIView(APIView):
     permission_classes = [IsAuthenticated]
