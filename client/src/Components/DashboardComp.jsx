@@ -34,37 +34,10 @@ export default function DashboardComp() {
         console.log(error.message);
       }
     };
-    const fetchPosts = async () => {
-      try {
-        const res = await fetch('/api/post/getposts?limit=5');
-        const data = await res.json();
-        if (res.ok) {
-          setPosts(data.posts);
-          setTotalPosts(data.totalPosts);
-          setLastMonthPosts(data.lastMonthPosts);
-        }
-      } catch (error) {
-        console.log(error.message);
-      }
-    };
-    const fetchComments = async () => {
-      try {
-        const res = await fetch('/api/comment/getcomments?limit=5');
-        const data = await res.json();
-        if (res.ok) {
-          setComments(data.comments);
-          setTotalComments(data.totalComments);
-          setLastMonthComments(data.lastMonthComments);
-        }
-      } catch (error) {
-        console.log(error.message);
-      }
-    };
-    if (currentUser) {
+    
+  
       fetchUsers();
-      fetchPosts();
-      fetchComments();
-    }
+  
   }, [currentUser]);
   return (
     <div className='p-3 md:mx-auto mt-20 space-y-5 '>
