@@ -265,16 +265,18 @@ LECTURER_ID_PREFIX =  "lec"
 JAZZMIN_SETTINGS = {
     "site_title": "Dashboard Admin",
     "site_header": "TEACHING AND LEARNING SUPPORT",
-    "site_brand": "TEACHING AND LEARNING SUPPORT",
-    "site_logo": "img/log.png",
+    # "site_brand": "TEACHING AND LEARNING SUPPORT",
+    "site_logo": "static/img/dj-lms.png",
     "welcome_sign": "Welcome to TEACHING AND LEARNING SUPPORT",
     "copyright": "TEACHING AND LEARNING SUPPORT",
     "topmenu_links": [
         {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"name": "Add Teacher", "url": "http://localhost:5173/dashboard?tab=staffAdd", "permissions": ["auth.view_user"]},
+        {"name": "Add Student", "url": "http://localhost:5173/dashboard?tab=addstudents", "permissions": ["auth.view_user"]},
         {"model": "auth.User"},
         {"app": "course"},
         {"app": "account"},
-         {"app": "cores"},
+        {"app": "cores"},
     ],
     "usermenu_links": [
         {"name": "Support", "url": "https://github.com/Ammen1", "new_window": True},
@@ -283,12 +285,7 @@ JAZZMIN_SETTINGS = {
     "navigation_expanded": True,
     "hide_apps": ["Group"],
     "hide_models": ["Group"],
-    "order_with_respect_to": [ "Course", "Quiz.author","Quiz", "cores", "Users",  "Reult"],
-    "custom_links": {
-        "books": [
-            {"name": "Make Messages", "url": "make_messages", "icon": "fas fa-comments", "permissions": ["books.view_book"]}
-        ]
-    },
+    "order_with_respect_to": ["Course",  "Users"],
     "icons": {
         "auth": "fas fa-users-cog",
         "auth.user": "fas fa-user-graduate",
@@ -300,8 +297,13 @@ JAZZMIN_SETTINGS = {
     "changeform_format": "horizontal_tabs",
     "changeform_format_overrides": {"auth.user": "collapsible", "auth.group": "vertical_tabs"},
     "language_chooser": False,
-   
+    "navbar": {
+        "bg_color": "bg-black",  # Background color
+        "text_color": "text-white",  # Text color
+        "font_size": "text-lg",  # Font size
+    }
 }
+
 
 
 CHAPA_SECRET = 'CHASECK_TEST-WLA5A4peABCYzMIKSaze3aYnfRBlpWDk'
