@@ -11,6 +11,10 @@ import SignUp from './pages/SignUp';
 import SingleCoursePage from './Components/CoureseSingle';
 import CourseCategory from './Components/CourseCategory';
 import PaymentSuccessPage from './Components/PaymentSuccessPag';
+import ForgotPasswordForm from './pages/ForgetPassword';
+import ResetPasswordForm from './pages/ResetPasswordForm';
+import PasswordResetComplete from './Components/PasswordResetComplete';
+import UploadFiles from './Components/Books';
 
 
 
@@ -26,6 +30,10 @@ export default function App() {
         <Route path='/course/:slug' element={<SingleCoursePage />} />
         <Route path='/sign-in' element={<SignIn />} />
         <Route path='/sign-up' element={<SignUp />} />
+        <Route path='/books' element={<UploadFiles />} />
+        <Route path="/reset-password/:uidb64/:token" element={<ResetPasswordForm />} />
+        <Route path="/reset-password/complete" element={<PasswordResetComplete />} />
+        <Route exact path="/forgot-password" element={<ForgotPasswordForm />} />
         <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>
