@@ -23,7 +23,7 @@ const CourseCategory = () => {
   }, []);
 
   return (
-    <section className="w-full max-w-[1600px] mt-20 dark:bg-white mx-auto px-6 py-8 md:py-16">
+    <section className="w-full max-w-[1600px]  dark:bg-white mx-auto px-6 py-8 md:py-16">
       <h2 className="text-[20px] md:text-[30px] text-textColor font-[700] text-center">
         Course Categories
       </h2>

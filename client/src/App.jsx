@@ -15,6 +15,10 @@ import ForgotPasswordForm from './pages/ForgetPassword';
 import ResetPasswordForm from './pages/ResetPasswordForm';
 import PasswordResetComplete from './Components/PasswordResetComplete';
 import UploadFiles from './Components/Books';
+import QuizList from './Components/QuizList';
+import QuizDetailForm from './Components/QuizDetailForm';
+import Quiz from './Components/Quiz';
+import QuestionComponent from './Components/QuestionComponent';
 
 
 
@@ -31,6 +35,10 @@ export default function App() {
         <Route path='/sign-in' element={<SignIn />} />
         <Route path='/sign-up' element={<SignUp />} />
         <Route path='/books' element={<UploadFiles />} />
+        <Route path='/quizs' element={<QuizList />} />
+        {/* <Route path="/quiz/:id" element={<QuizDetailForm />} />QuestionComponent */}
+        <Route path="/quiz/:id" element={<QuestionComponent />} />
+
         <Route path="/reset-password/:uidb64/:token" element={<ResetPasswordForm />} />
         <Route path="/reset-password/complete" element={<PasswordResetComplete />} />
         <Route exact path="/forgot-password" element={<ForgotPasswordForm />} />

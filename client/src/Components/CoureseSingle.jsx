@@ -15,6 +15,7 @@ const SingleCoursePage = () => {
   const [showPayNowButton, setShowPayNowButton] = useState(true);
   const [completedVideos, setCompletedVideos] = useState([]);
   const { loading, error: errorMessage } = useSelector((state) => state.user);
+  const { currentUser } = useSelector(state => state.user);
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -42,7 +43,7 @@ const SingleCoursePage = () => {
       const response = await axios.post('http://127.0.0.1:8000/api/chapa/send-request/', {
         course_id: course.id,
         amount: course.price,
-        email: "abebech_bekele@gmail.com",
+        email: currentUser.email,
         currency: "ETB",
         first_name: "Bilen",
         last_name: "Gizachew",
@@ -87,13 +88,13 @@ const SingleCoursePage = () => {
   }
 
   return (
-    <div className="container bg-white mx-auto px-4 py-8 text-black mt-20">
+    <div className="container bg-white mx-auto px-4 py-8 text-black  ">
       <h2 className="text-3xl md:text-4xl font-bold text-center text-black mb-8">
         {course.title}
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>
-          <Card className="bg-white rounded-sm border dark:bg-white dark:border-slate-100">
+          <Card className="rounded-sm border dark:bg-slate-200 dark:border-slate-100">
             <div className="">
               <video
                 key={currentVideoIndex}
