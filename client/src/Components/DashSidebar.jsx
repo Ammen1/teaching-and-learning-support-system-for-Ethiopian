@@ -26,7 +26,7 @@ const DashboardSidebar = () => {
 
   const handleSignout = async () => {
     try {
-      const res = await fetch('/api/user/signout', {
+      const res = await fetch('http://127.0.0.1:8000/api/account/logout/', {
         method: 'POST'
       });
       const data = await res.json();
