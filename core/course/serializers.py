@@ -88,3 +88,9 @@ class ProgramSerializer(serializers.ModelSerializer):
 
 
 
+class UploadFileSerializer(serializers.ModelSerializer):
+    course = CourseSerializer(read_only=True)  # Corrected field name
+    class Meta:
+        model = Upload
+        fields = '__all__'
+        depth = 1 
