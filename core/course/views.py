@@ -357,7 +357,7 @@ class UserCourseListView(APIView):
 
 
 class FileUploads(generics.ListAPIView):
-    serializer_class = UploadFormFileSerializer
+    serializer_class = UploadFileSerializer
     queryset = Upload.objects.all()
 
 class FileUploadAPIView(APIView):

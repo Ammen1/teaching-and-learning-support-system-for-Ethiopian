@@ -8,6 +8,7 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
     path('signup/', SignUpView.as_view(), name='signup'),
     path('login/', UserLoginView.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(), name='logout'),
     path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('staff/add/', StaffAddView.as_view(), name='staff-add'),
     path('student/add/', StudentAddView.as_view(), name='student-add'),
