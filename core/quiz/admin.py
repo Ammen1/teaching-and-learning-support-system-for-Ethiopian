@@ -11,6 +11,7 @@ from .models import (
     Choice,
     EssayQuestion,
     Sitting,
+    UserAnswer,
 )
 
 
@@ -62,7 +63,7 @@ class MCQuestionAdmin(admin.ModelAdmin):
     fields = ("content", "figure", "quiz", "explanation", "choice_order")
 
     search_fields = ("content", "explanation")
-    filter_horizontal = ("quiz",)
+
 
     inlines = [ChoiceInline]
 
@@ -76,18 +77,32 @@ class ProgressAdmin(admin.ModelAdmin):
 
 class EssayQuestionAdmin(admin.ModelAdmin):
     list_display = ("content",)
-    # list_filter = ('category',)
-    fields = (
-        "content",
-        "quiz",
-        "explanation",
-    )
+    fields = ("content", "figure", "explanation")  # Exclude quiz field for now
     search_fields = ("content", "explanation")
-    filter_horizontal = ("quiz",)
+
+    # Add the quiz field to the form
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        form.base_fields["quiz"] = forms.ModelMultipleChoiceField(
+            queryset=Quiz.objects.all(),
+            required=False,
+            widget=FilteredSelectMultiple(verbose_name=_("Quizzes"), is_stacked=False),
+        )
+        return form
+
+    # Override save method to handle quiz association
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        obj.quiz.set(form.cleaned_data["quiz"])
+
+admin.site.register(EssayQuestion, EssayQuestionAdmin)
 
 
 admin.site.register(Quiz, QuizAdmin)
 admin.site.register(MCQuestion, MCQuestionAdmin)
 admin.site.register(Progress, ProgressAdmin)
-admin.site.register(EssayQuestion, EssayQuestionAdmin)
+
 admin.site.register(Sitting)
+admin.site.register(UserAnswer)
+admin.site.register(Question)
+admin.site.register(Choice)

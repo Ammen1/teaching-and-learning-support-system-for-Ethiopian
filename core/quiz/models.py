@@ -18,6 +18,7 @@ from django.db.models import Q
 from model_utils.managers import InheritanceManager
 from course.models import Course
 from .utils import *
+from account.models import User
 
 CHOICE_ORDER_OPTIONS = (
     ("content", _("Content")),
@@ -49,6 +50,7 @@ class QuizManager(models.Manager):
 
 
 class Quiz(models.Model):
+    # questions = models.ForeignKey(Ques, on_delete=models.CASCADE, null=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True)
     title = models.CharField(verbose_name=_("Title"), max_length=60, blank=False)
     slug = models.SlugField(blank=True, unique=True)
@@ -440,7 +442,7 @@ class Sitting(models.Model):
 
 
 class Question(models.Model):
-    quiz = models.ManyToManyField(Quiz, verbose_name=_("Quiz"), blank=True)
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, blank=True)
     figure = models.ImageField(
         upload_to="uploads/%Y/%m/%d",
         blank=True,
@@ -563,3 +565,10 @@ class EssayQuestion(Question):
     class Meta:
         verbose_name = _("Essay style question")
         verbose_name_plural = _("Essay style questions")
+
+
+class UserAnswer(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    selected_choice = models.ForeignKey(Choice, on_delete=models.CASCADE)

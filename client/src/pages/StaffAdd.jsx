@@ -20,9 +20,8 @@ const StaffAdd = () => {
     e.preventDefault();
     try {
       const response = await axios.post('http://127.0.0.1:8000/api/account/staff/add/', formData);
-      console.log(response.data); // Assuming the response contains user data
+      console.log(response.data); 
       alert('Staff member added successfully!');
-      // Reset form fields after successful submission
       setFormData({
         first_name: '',
         last_name: '',
@@ -95,7 +94,9 @@ const StaffAdd = () => {
             required
           />
         </div>
-        <Button className="border-2 py-2 px-4 bg-[#228be6] ml-28 rounded-md text-[#fff] flex items-center">Add Staff</Button>
+        <Button   
+        type="submit"
+          className="border-2 py-2 px-4 bg-[#228be6] ml-28 rounded-md text-[#fff] flex items-center">Add Staff</Button>
       </form>
     </div>
   );
