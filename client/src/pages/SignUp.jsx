@@ -1,8 +1,6 @@
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-// import OAuth from "../components/OAuth";
-// Import necessary components and hooks
 
 export default function SignUp() {
   const [formData, setFormData] = useState({});
@@ -40,121 +38,107 @@ export default function SignUp() {
   };
 
   return (
-    <div className="min-h-screen mt-20">
-      <div className="flex p-3 max-w-3xl mx-auto flex-col md:flex-row md:items-center gap-5">
-        {/* left */}
-        {/* Your left content */}
-        
-        {/* right */}
-        <div className="flex-1">
-          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-            {/* Username */}
-            <div>
-              <Label value="Your username" />
-              <TextInput
-                type="text"
-                placeholder="Username"
-                id="username"
-                onChange={handleChange}
-              />
-            </div>
-
-            {/* Email */}
-            <div>
-              <Label value="Your email" />
-              <TextInput
-                type="email"
-                placeholder="name@company.com"
-                id="email"
-                onChange={handleChange}
-              />
-            </div>
-
-            {/* Password */}
-            <div>
-              <Label value="Your password" />
-              <TextInput
-                type="password"
-                placeholder="Password"
-                id="password"
-                onChange={handleChange}
-              />
-            </div>
-
-            {/* Last Name */}
-            <div>
-              <Label value="Last Name" />
-              <TextInput
-                type="text"
-                placeholder="Last Name"
-                id="last_name"
-                onChange={handleChange}
-              />
-            </div>
-
-            {/* First Name */}
-            <div>
-              <Label value="First Name" />
-              <TextInput
-                type="text"
-                placeholder="First Name"
-                id="first_name"
-                onChange={handleChange}
-              />
-            </div>
-
-            {/* Address */}
-            <div>
-              <Label value="Address" />
-              <TextInput
-                type="text"
-                placeholder="Address"
-                id="address"
-                onChange={handleChange}
-              />
-            </div>
-
-            {/* Confirm Password */}
-            <div>
-              <Label value="Confirm Password" />
-              <TextInput
-                type="password"
-                placeholder="Confirm Password"
-                id="confirmPassword"
-                onChange={handleChange}
-              />
-            </div>
-
-            {/* Sign Up Button */}
-            <Button
-              gradientDuoTone="purpleToPink"
-              type="submit"
-              disabled={loading}
-            >
-              {loading ? (
-                <>
-                  <Spinner size="sm" />
-                  <span className="pl-3">Loading...</span>
-                </>
-              ) : (
-                "Sign Up"
-              )}
-            </Button>
-          </form>
-          {/* Link to sign-in page */}
-          <div className="flex gap-2 text-sm mt-5">
-            <span>Already have an account?</span>
-            <Link to="/sign-in" className="text-blue-500">
-              Sign In
-            </Link>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="max-w-md w-full py-8 px-4 bg-white shadow-lg rounded-md">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <Label value="Username" />
+            <TextInput
+              type="text"
+              placeholder="Enter your username"
+              id="username"
+              onChange={handleChange}
+              className="input"
+            />
           </div>
-          {/* Error message */}
-          {errorMessage && (
-            <Alert className="mt-5" color="failure">
-              {errorMessage}
-            </Alert>
-          )}
+          <div>
+            <Label value="Email" />
+            <TextInput
+              type="email"
+              placeholder="name@company.com"
+              id="email"
+              onChange={handleChange}
+              className="input"
+            />
+          </div>
+          <div>
+            <Label value="Password" />
+            <TextInput
+              type="password"
+              placeholder="Enter your password"
+              id="password"
+              onChange={handleChange}
+              className="input"
+            />
+          </div>
+          <div>
+            <Label value="Last Name" />
+            <TextInput
+              type="text"
+              placeholder="Enter your last name"
+              id="last_name"
+              onChange={handleChange}
+              className="input"
+            />
+          </div>
+          <div>
+            <Label value="First Name" />
+            <TextInput
+              type="text"
+              placeholder="Enter your first name"
+              id="first_name"
+              onChange={handleChange}
+              className="input"
+            />
+          </div>
+          <div>
+            <Label value="Address" />
+            <TextInput
+              type="text"
+              placeholder="Enter your address"
+              id="address"
+              onChange={handleChange}
+              className="input"
+            />
+          </div>
+          <div>
+            <Label value="Confirm Password" />
+            <TextInput
+              type="password"
+              placeholder="Confirm your password"
+              id="confirmPassword"
+              onChange={handleChange}
+              className="input"
+            />
+          </div>
+          <Button
+             className='w-full bg-gradient-to-r from-indigo-900 via-purple-700 to-pink-900  text-white p-2 rounded-md transition duration-300 ease-in-out'
+             
+            type="submit"
+            disabled={loading}
+
+          >
+            {loading ? (
+              <>
+                <Spinner size="sm" />
+                <span className="pl-3">Loading...</span>
+              </>
+            ) : (
+              "Sign Up"
+            )}
+          </Button>
+        </form>
+        <div className="mt-4 text-center">
+          <span>Already have an account?</span>
+          <Link to="/sign-in" className="ml-1 text-blue-500">
+            Sign In
+          </Link>
         </div>
+        {errorMessage && (
+          <Alert className="mt-5" color="failure">
+            {errorMessage}
+          </Alert>
+        )}
       </div>
     </div>
   );
