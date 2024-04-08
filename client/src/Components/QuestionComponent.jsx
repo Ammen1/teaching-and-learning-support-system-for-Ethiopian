@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Checkbox, Label, Button } from "flowbite-react";
+import { useParams } from 'react-router-dom';
 
-const QuestionComponent = ({ id }) => {
+const QuestionComponent = () => {
+    const { quiz_id } = useParams();
     const [questions, setQuestions] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedChoices, setSelectedChoices] = useState({});
@@ -13,7 +15,7 @@ const QuestionComponent = ({ id }) => {
     const [showExplanation, setShowExplanation] = useState(false);
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:8000/api/quiz/get_question_and_choices/${id}/`)
+        fetch(`http://127.0.0.1:8000/api/quiz/get_question_and_choices/${quiz_id}/`)
             .then(response => response.json())
             .then(data => {
                 setQuestions(data);
@@ -21,7 +23,7 @@ const QuestionComponent = ({ id }) => {
                 setQuizPassMark(Math.ceil(data.length / 2));
             })
             .catch(error => console.error('Error fetching questions:', error));
-    }, [id]);
+    }, [quiz_id]);
 
     useEffect(() => {
         if (Object.values(selectedChoices).some(choice => choice === true)) {
@@ -44,15 +46,36 @@ const QuestionComponent = ({ id }) => {
     };
 
     const handleChoiceClick = (choiceId, correct) => {
-        setSelectedChoices(prevState => ({
-            ...prevState,
-            [choiceId]: !prevState[choiceId]
-        }));
-        if (correct) {
-            setCorrectAnswersCount(prevCount => prevCount + 1);
+        // Check if the choice was already selected and if the answer is correct
+        if (!selectedChoices[choiceId]) {
+            setSelectedChoices(prevState => ({
+                ...prevState,
+                [choiceId]: true  // Select the choice
+            }));
+            if (correct) {
+                setCorrectAnswersCount(prevCount => prevCount + 1);
+            }
+        }
+    
+        // Disable further selections if the choice is incorrect
+        if (!correct) {
+            // Iterate through other choices and disable them
+            Object.keys(selectedChoices).forEach(id => {
+                if (id !== choiceId) {
+                    setSelectedChoices(prevState => ({
+                        ...prevState,
+                        [id]: true  // Disable other choices
+                    }));
+                }
+            });
+            // Disable the Next button if the current choice is incorrect
+            setNextDisabled(true);
+        } else {
+            // Enable the Next button if the current choice is correct
+            setNextDisabled(false);
         }
     };
-
+    
     const handleNextQuestion = () => {
         if (currentQuestionIndex === questions.length - 1) {
             setQuizCompleted(true);
@@ -78,10 +101,10 @@ const QuestionComponent = ({ id }) => {
                     onChange={() => handleChoiceClick(choice.id, choice.correct)}
                     className="mr-2 font-bold"
                 />
-                <Label htmlFor={choice.id} className={`cursor-pointer font-bold text-2xl ${selectedChoices[choice.id] && choice.correct ? 'text-green-600  underline' : (selectedChoices[choice.id] && !choice.correct ? 'text-red-600 underline' : 'text-gray-800')}`}>
-                    {letters[index]}
+                <Label htmlFor={choice.id} className={`cursor-pointer font-bold text-xl ${selectedChoices[choice.id] && choice.correct ? 'text-green-600  underline' : (selectedChoices[choice.id] && !choice.correct ? 'text-red-600 underline' : 'text-gray-800')}`}>
+                    {letters[index]} { "  "}  {choice.choice}
                 </Label>
-                <span className="ml-2 text-md">{choice.choice}</span>
+               
             </div>
         ));
     };
@@ -108,14 +131,14 @@ const QuestionComponent = ({ id }) => {
                                 <Button 
                                     onClick={handlePrevQuestion}
                                     disabled={prevDisabled}
-                                    className="bg-gray-400 hover:bg-gray-500 text-white font-semibold px-6 py-3 rounded-md focus:outline-none transition duration-300"
+                                    className="bg-gradient-to-r from-indigo-900 via-purple-700 to-pink-900  text-white"
                                 >
                                     Previous
                                 </Button>
                                 <Button 
                                     onClick={handleNextQuestion} 
                                     disabled={nextDisabled} 
-                                    className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-md focus:outline-none transition duration-300"
+                                    className="bg-gradient-to-r from-indigo-900 via-purple-700 to-pink-900  text-white"
                                 >
                                     {currentQuestionIndex === questions.length - 1 ? 'Finish Quiz' : 'Next Question'}
                                 </Button>
@@ -123,19 +146,19 @@ const QuestionComponent = ({ id }) => {
                             {showExplanation && (
                                 <div>
                                     <h3 className="text-lg font-semibold mt-4">Explanation:</h3>
-                                    <p className="text-gray-800">{questions[currentQuestionIndex].explanation}</p>
+                                    <Card className="bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-900  text-white">{questions[currentQuestionIndex].explanation}</Card>
                                 </div>
                             )}
                             <Button 
-                                outline 
-                                className="mt-4 text-lg text-gray-600"
+                               
+                                className="mt-4 text-lg bg-gradient-to-r from-indigo-900 via-purple-700 to-pink-900  text-white"
                                 onClick={() => setShowExplanation(!showExplanation)}
                             >
                                 {showExplanation ? 'Hide Explanation' : 'Show Explanation'}
                             </Button>
                             <Button 
-                                outline 
-                                className="mt-4 text-lg text-gray-600 ml-auto"
+                                
+                                className="mt-4 text-lg ml-auto bg-gradient-to-r from-indigo-900 via-purple-700 to-pink-900  text-white"
                             >
                                 Correct Answers: {correctAnswersCount}
                             </Button>
