@@ -50,10 +50,11 @@ const Navbar = () => {
             to='/'
             className='self-center text-xl font-semibold  text-black'
           >
-            <span className="px-2 py-2 bg-gradient-to-r from-indigo-900 via-purple-700 to-pink-900 rounded-lg text-white">
-              Empowering 
+            <span className="px-2 py-2 bg-gradient-to-r text-md from-indigo-900 via-purple-700 to-pink-900 rounded-lg text-white">
+            TEACHING AND LEARNING SUPPORT
+
             </span>
-            Ethiopian Education
+            
           </Link>
           <div className={`lg:flex hidden gap-4 ${scrolling ? 'text-white' : 'text-gray-800'}`}> 
             <Link to='/home' className='hover:text-indigo-500 hover:underline'>Home</Link> 
