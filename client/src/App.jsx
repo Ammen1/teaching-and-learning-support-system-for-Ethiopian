@@ -37,7 +37,7 @@ export default function App() {
         <Route path='/books' element={<UploadFiles />} />
         <Route path='/quizs' element={<QuizList />} />
         {/* <Route path="/quiz/:id" element={<QuizDetailForm />} />QuestionComponent */}
-        <Route path="/quiz/:id" element={<QuestionComponent />} />
+        <Route path="/quiz/:quiz_id" element={<QuestionComponent />} />
 
         <Route path="/reset-password/:uidb64/:token" element={<ResetPasswordForm />} />
         <Route path="/reset-password/complete" element={<PasswordResetComplete />} />
